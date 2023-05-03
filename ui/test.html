@@ -7,10 +7,14 @@
   <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script src="js/simx.js"></script>
   <script>
   $( function() {
     $( "#tabs" ).tabs()
   } );
+  simx = SimXUI();
+  ni = simx.genNI("sni", "sni-t", [0, 0, 0, 0, 0, 0, 0, 0]);
+  $("#sni").html(ni);
   </script>
   <style>
   .ui-tabs-vertical { width: 55em; }
@@ -19,6 +23,7 @@
   .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
   .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
   .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+  table td {text-align: end;}
   </style>
 </head>
 <body>
@@ -45,36 +50,9 @@
   <div id="tabs-2">
     <h2>노드정보</h2>
     <p>노드정보를 불러옵니다. 디폴트 레지스터맵을 사용하신다면 노드정보는 항상 고정값 입니다.</p>
-	<div>
-	<div id="sni" class="ui-widget">
-  <h3>시뮬레이터 노드정보</h3>
-  <table id="sni_t" class="ui-widget ui-widget-content">
-    <thead>
-      <tr class="ui-widget-header ">
-        <th>1 기관코드</th>
-        <th>2 회사코드</th>
-        <th>3 제품타입</th>
-        <th>4 제품코드</th>
-        <th>5 프로토콜버전</th>
-        <th>6 연결가능장비수</th>
-        <th>7 시리얼 번호(1)</th>
-        <th>8 시리얼 번호(2)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td colspan="2">0</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-</div>
+    <h3>시뮬레이터 노드정보</h3>
+	  <div id="sni" class="ui-widget"> </div>
+	  <div id="rni" class="ui-widget"> </div>
   </div>
   <div id="tabs-3">
     <h2>장치정보</h2>
