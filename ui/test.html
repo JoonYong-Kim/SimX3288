@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KS X 3288 양액기 통신 튜토리얼</title>
+  <link rel="stylesheet" href="jquery-ui/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#tabs" ).tabs()
+  } );
+  </script>
+  <style>
+  .ui-tabs-vertical { width: 55em; }
+  .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+  .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+  .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+  .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+  .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+  </style>
+</head>
+<body>
+ 
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">기본설정</a></li>
+    <li><a href="#tabs-2">노드정보</a></li>
+    <li><a href="#tabs-3">장치정보</a></li>
+    <li><a href="#tabs-4">양액기제어권</a></li>
+    <li><a href="#tabs-5">양액기제어</a></li>
+    <li><a href="#tabs-6">센서정보</a></li>
+  </ul>
+  <div id="tabs-1">
+    <h2>기본설정</h2>
+	  <fieldset>
+		<legend>연결대상</legend>
+		<label for="radio-1">시뮬레이터만 연결</label>
+		<input type="radio" name="radio-1" id="radio-1">
+		<label for="radio-2">USB장비도 연결</label>
+		<input type="radio" name="radio-1" id="radio-2">
+	  </fieldset>
+  </div>
+  <div id="tabs-2">
+    <h2>노드정보</h2>
+    <p>노드정보를 불러옵니다. 디폴트 레지스터맵을 사용하신다면 노드정보는 항상 고정값 입니다.</p>
+	<div>
+	<div id="sni" class="ui-widget">
+  <h3>시뮬레이터 노드정보</h3>
+  <table id="sni_t" class="ui-widget ui-widget-content">
+    <thead>
+      <tr class="ui-widget-header ">
+        <th>1 기관코드</th>
+        <th>2 회사코드</th>
+        <th>3 제품타입</th>
+        <th>4 제품코드</th>
+        <th>5 프로토콜버전</th>
+        <th>6 연결가능장비수</th>
+        <th>7 시리얼 번호(1)</th>
+        <th>8 시리얼 번호(2)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td colspan="2">0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+  </div>
+  <div id="tabs-3">
+    <h2>장치정보</h2>
+  </div>
+  <div id="tabs-4">
+    <h2>양액기제어권</h2>
+  </div>
+  <div id="tabs-5">
+    <h2>양액기제어</h2>
+  </div>
+  <div id="tabs-6">
+    <h2>센서정보</h2>
+  </div>
+</div>
+ 
+ 
+</body>
+</html>
