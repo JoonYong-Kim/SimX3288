@@ -23,6 +23,7 @@ class Connection:
         self._conn = None
         self._option = option
         self._logger = logger
+        self._isconnected = False
 
     def connect(self):
         try:
@@ -36,12 +37,16 @@ class Connection:
                 ret = self._conn.connect()
             else:
                 ret = None
+
+            self._isconnected = ret
             return ret
         except Exception as ex:
             self._logger.warn("Fail to connect MODBUS [" + str(self._option) + "] : " + str(ex))
+            self._isconnected = False
             return None
 
     def close(self):
+        self._isconnected = False
         self._conn.close()
 
     def readregister(self, addr, count, unit):
@@ -49,6 +54,7 @@ class Connection:
             return self._conn.read_holding_registers(addr, count, unit=unit)
         except Exception as ex:
             self._logger.warn("fail to read holding registers[" + str(addr) + "] : "+ str(ex))
+            self._isconnected = False
             return None
 
     def writeregister(self, addr, content, unit):
@@ -62,8 +68,19 @@ class Connection:
                 return True
         except Exception as ex:
             self._logger.warn("fail to write holding registers[" + str(addr) + "] : " + str(ex))
+            self._isconnected = False
             return False
 
+    def isconnected(self):
+        return self._isconnected
+
+    def check(self):
+        self._logger.info("Check connection~"  + self._option["port"])
+        if self._isconnected is True:
+            return True
+        else:
+            self._logger.info("Check connection~"  + self._option["port"])
+            return self.connect()
 
 class KSMaster(Runner):
     def __init__(self, option, logger):
@@ -73,6 +90,8 @@ class KSMaster(Runner):
         self._connected = False
         self._modbus = [None, None]
         self._msgq = deque()
+        self._isrunning = False
+        self._keywords = ["sim", "real"]
 
     def connect(self):
         try:
@@ -117,9 +136,6 @@ class KSMaster(Runner):
             elif topic == 'simx/read':
                 self.read(json.loads(msg))
 
-    def run(self, debug=False):
-
-
     def onmsg(self, client, obj, blk):
         self._logger.info("Received '" + str(blk.payload) + "' on topic '"
               + blk.topic + "' with QoS " + str(blk.qos))
@@ -137,26 +153,29 @@ class KSMaster(Runner):
         self._modbus[idx].connect()
 
     def connectmodbus(self):
-        if "sim" in self._option["modbus"]:
-            self._connectmodbus(0)
-        if "real" in self._option["modbus"]:
-            self._connectmodbus(1)
+        for idx in range(2):
+            if self._keywords[idx] in self._option["modbus"]:
+                self._connectmodbus(idx)
 
     def write(self, msg):
         ret = [None, None]
-        if self._modbus[0]: 
-            ret[0] = self._modbus[0].write(msg["addr"], msg["content"], self._option["modbus"]["sim"]["unit"])
-        if self._modbus[1]: 
-            ret[1] = self._modbus[1].write(msg["addr"], msg["content"], self._option["modbus"]["real"]["unit"])
+        for idx in range(2):
+            if self._modbus[idx]: 
+                ret[idx] = self._modbus[idx].write(msg["addr"], msg["content"], self._option["modbus"][self._keywords[idx]]["unit"])
+                if ret[idx] is None:
+                    self._modbus[idx].check()
+
         msg["ret"] = ret
         self.publish("simx/res", msg)
 
     def read(self, msg):
         ret = [None, None]
-        if self._modbus[0]:
-            ret[0] = self._modbus[0].readregister(msg["addr"], msg["count"], self._option["modbus"]["sim"]["unit"])
-        if self._modbus[1]:
-            ret[1] = self._modbus[1].readregister(msg["addr"], msg["count"], self._option["modbus"]["real"]["unit"])
+        for idx in range(2):
+            if self._modbus[idx]: 
+                ret[idx] = self._modbus[idx].readregister(msg["addr"], msg["count"], self._option["modbus"][self._keywords[idx]]["unit"])
+                if ret[idx] is None:
+                    self._modbus[idx].check()
+
         msg["ret"] = ret
         self.publish("simx/reg", msg)
 
@@ -167,6 +186,21 @@ class KSMaster(Runner):
                 port=self._option["mqtt"]["port"])
         except Exception as ex:
             self._logger.warn("publish " + str((topic, msg)) + " exception : " + str(ex))
+
+    def stop(self):
+        self._isrunning = False
+
+    def initialize(self):
+        self.connect()
+        self._isrunning = True
+
+    def run(self, debug=False):
+        while self._isrunning:
+            self.process()
+            time.sleep(0.1)
+
+    def finalize(self):
+        self.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

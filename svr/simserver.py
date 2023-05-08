@@ -20,6 +20,9 @@ class SimServer(Runner):
         server_object = HTTPServer(server_address=('', 80), RequestHandlerClass=CGIHTTPRequestHandler)
         server_object.serve_forever()
 
+    def stop(self):
+        pass
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage : python simserver.py [start|stop|restart|run]")
