@@ -52,7 +52,7 @@ class Runner(object):
         """
         self._logger.debug("stopping....")
 
-def getlogger(pname):
+def getlogger(pname, runtype):
     import logging
     import logging.handlers
 
@@ -62,9 +62,10 @@ def getlogger(pname):
     formatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
     streamHandler.setFormatter(formatter)
     logger.addHandler(streamHandler)
-    fileHandler = logging.handlers.RotatingFileHandler("/var/log/" + pname + ".log", maxBytes=5000000, backupCount=5)
-    fileHandler.setFormatter(formatter)
-    logger.addHandler(fileHandler)
+    if runtype == "start":
+        fileHandler = logging.handlers.RotatingFileHandler("/var/log/" + pname + ".log", maxBytes=5000000, backupCount=5)
+        fileHandler.setFormatter(formatter)
+        logger.addHandler(fileHandler)
 
     return logger
 
@@ -72,7 +73,7 @@ class Daemon:
     """
     A generic daemon class.
     """
-    def __init__(self, pname, runner, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+    def __init__(self, pname, runner, runtype='run', stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         """
         Deamon Constructor
         :param pname: process name
@@ -92,7 +93,7 @@ class Daemon:
         signal.signal(signal.SIGINT, self.terminate)
         signal.signal(signal.SIGTERM, self.terminate)
 
-        self._logger = getlogger(pname)
+        self._logger = getlogger(pname, runtype)
         self.runner.setlogger(self._logger)
 
     def daemonize(self):

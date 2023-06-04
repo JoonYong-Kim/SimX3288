@@ -10,34 +10,38 @@
   <script src="js/mqtt.min.js"></script>
   <script src="js/simxui.js"></script>
   <script src="js/simxcomm.js"></script>
+  <script src="js/simxact.js"></script>
   <script>
   $( function() {
     $( "#tabs" ).tabs();
-    $( "input" ).checkboxradio({icon:false});
-    simx = SimXUI();
-    orig = [0, 0, 3, 4, 20, 21, 0, 0]
-    ni = simx.genNI("sni-t", orig, null);
-    $("#sni").html(ni);
-    ni = simx.genNI("rni-t", [0, 0, 3, 0, 20, 0, 0, 0], orig);
-    $("#rni").html(ni);
+    $( "input[type='radio']" ).checkboxradio({icon:false});
+    ui = SimXUI();
+    /*
+    orig = [0, 0, 3, 4, 20, 21, 30, 0];
+    simx.setNI(orig, orig, mode);
 
-    di = simx.genDI("sdi-t", [12, 12, 12, 16, 16, 16, 7, 5, 5, 5, 5, 5, 5, 5,
-          5, 5, 5, 5, 5, 5, 204], null);
-    $("#sdi").html(di);
+    orig = [12, 12, 12, 16, 16, 16, 7, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 204];
+    simx.setDI(orig, orig, mode);
 
-    ndc = simx.genNDC("sndcc-t", [2, 3, 2]);
-    $("#sndcc").html(ndc);
-    nds = simx.genNDS("sndcs-t", [0, 3, 2]);
-    $("#sndcs").html(nds);
+    simx.setNDC([2,3,2], mode);
+    simx.setNDS([0, 3, 2], [0, 3, 2], mode);
 
-    nsc = simx.genNSC("snscc-t", [0, 4, 0, 0, 0, 0, 0, 0, 0, 0]);
-    $("#snscc").html(nsc);
-    nss = simx.genNSS("snscs-t", [0, 0, 0, 4, 0, 0]);
-    $("#snscs").html(nss);
+    simx.setNSC([0, 4, 0, 0, 0, 0, 0, 0, 0, 0], mode);
+    simx.setNSS([0, 0, 0, 4, 0, 0], [0, 0, 0, 4, 0, 0], mode);
 
-    conn = SimXComm(window.location.hostname);
-    console.log(window.location.hostname);
-    conn.initialize(window.location.hostname);
+    orig = [].concat(...Array.from({length: 20}, () => [26214, 16826, 0]));
+    simx.setSS(orig, orig, mode);
+    */
+
+    comm = SimXComm(window.location.hostname, ui);
+    comm.initialize();
+
+    act = SimXAct(ui, comm);
+    act.setAction();
+
+    setInterval(function() {
+        comm.updateinfo();
+    }, 3000);
   } );
   </script>
   <style>
@@ -65,11 +69,18 @@
   <div id="tabs-1">
     <h2>기본설정</h2>
     <fieldset>
-		<legend>연결대상</legend>
-		<label for="simonly">시뮬레이터만 연결</label>
-		<input type="radio" name="target" id="simonly" checked>
-		<label for="realdev">USB장비도 연결</label>
-		<input type="radio" name="target" id="realdev">
+		<legend>작동모드</legend>
+		<label for="sim">시뮬레이션 모드</label>
+		<input type="radio" name="mode" id="sim" value="1" checked>
+		<label for="ctrl">통합제어기 모드</label>
+		<input type="radio" name="mode" id="ctrl" value="2">
+		<label for="simnctrl">시뮬레이션&통합제어기 모드</label>
+		<input type="radio" name="mode" id="simnctrl" value="3">
+		<label for="nut">양액기 작동 모드</label>
+		<input type="radio" name="mode" id="nut" value="4">
+    <br>
+		<label for="unit">슬레이브 아이디</label>
+    <input type="number" name="unit" id="unit" value=1>
 	  </fieldset>
   </div>
   <div id="tabs-2">
@@ -89,39 +100,50 @@
     <fieldset>
 		<legend>제어권</legend>
 		<label for="local">로컬(양액기 자동제어)</label>
-		<input type="radio" name="control" id="local" >
+		<input type="radio" name="control" id="local" value=1 >
 		<label for="remote">플랫폼(통합제어기 제어)</label>
-		<input type="radio" name="control" id="remote">
+		<input type="radio" name="control" id="remote" value=2>
 		<label for="manual">수동(사용자 수동제어)</label>
-		<input type="radio" name="control" id="manual">
+		<input type="radio" name="control" id="manual" value=3 disabled>
 	  </fieldset>
-	  <div id="sndcs" class="ui-widget"> </div>
-	  <div id="sndcc" class="ui-widget"> </div>
-	  <div id="rndcs" class="ui-widget"> </div>
-	  <div id="rndcc" class="ui-widget"> </div>
+	  <div id="ndc" class="ui-widget"> </div>
+	  <div id="snds" class="ui-widget"> </div>
+	  <div id="rnds" class="ui-widget"> </div>
   </div>
   <div id="tabs-5">
     <h2>양액기제어</h2>
     <fieldset>
 		<legend>양액기제어</legend>
 		<label for="off">정지</label>
-		<input type="radio" name="command" id="off" >
+		<input type="radio" name="command" id="off" value=0 >
 		<label for="once">1회관수</label>
-		<input type="radio" name="command" id="once" >
+		<input type="radio" name="command" id="once" value=401 >
 		<label for="area">구역관수(원수관수)</label>
-		<input type="radio" name="command" id="area" >
+		<input type="radio" name="command" id="area" value=402 >
 		<label for="param">파라미터관수(양액관수)</label>
-		<input type="radio" name="command" id="param" >
+		<input type="radio" name="command" id="param" value=403 >
+
+    <br>
+		<label for="start-area">시작 구역</label>
+    <input type="number" name="start-area" id="start-area" value=1>
+		<label for="stop-area">종료 구역</label>
+    <input type="number" name="stop-area" id="stop-area" value=5>
+    <br>
+		<label for="on-sec">작동 시간</label>
+    <input type="number" name="on-sec" id="on-sec" value=30>
+		<label for="EC">EC</label>
+    <input type="number" name="EC" id="EC" value=2.3>
+		<label for="pH">pH</label>
+    <input type="number" name="pH" id="pH" value=6.5>
 	  </fieldset>
-	  <div id="snscs" class="ui-widget"> </div>
-	  <div id="snscc" class="ui-widget"> </div>
-	  <div id="rnscs" class="ui-widget"> </div>
-	  <div id="rnscc" class="ui-widget"> </div>
+	  <div id="nsc" class="ui-widget"> </div>
+	  <div id="snss" class="ui-widget"> </div>
+	  <div id="rnss" class="ui-widget"> </div>
   </div>
   <div id="tabs-6">
     <h2>센서정보</h2>
-	  <div id="ssen" class="ui-widget"> </div>
-	  <div id="rsen" class="ui-widget"> </div>
+	  <div id="sss" class="ui-widget"> </div>
+	  <div id="rss" class="ui-widget"> </div>
   </div>
 </div>
  

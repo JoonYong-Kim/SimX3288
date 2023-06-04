@@ -9,39 +9,39 @@
 import sys
 import os
 import traceback
-from http.server import HTTPServer, CGIHTTPRequestHandler
-from daemon import Runner, Daemon
+from flask import Flask, request, json, render_template
 
-class SimServer(Runner):
-    def initialize(self):
-        os.chdir('../ui')
+app = Flask(__name__, static_url_path='', static_folder='../ui/')
 
-    def run(self, debug=False):
-        server_object = HTTPServer(server_address=('', 80), RequestHandlerClass=CGIHTTPRequestHandler)
-        server_object.serve_forever()
+@app.route("/mode", methods=['GET'])
+def getmode():
+    fp = open("../mode/real.mode", "r")
+    mode = fp.readline()
+    fp.close()
 
-    def stop(self):
-        pass
+    return json.dumps({"real": mode.strip()})
+
+@app.route("/modechange", methods=['POST'])
+def modechange():
+    print (request.method, request.form.get('mode'))
+    if 0 < int(request.form.get('mode')) < 5:
+        fp = open("../mode/ui.mode", "w")
+        fp.write(request.form.get('mode'))
+        fp.close()
+
+        response = {
+            "status": "success"
+        }
+    else:
+        response = {
+            "status": "failure"
+        }
+
+    return json.dumps(response)
+
+@app.route("/")
+def index():
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage : python simserver.py [start|stop|restart|run]")
-        sys.exit(2)
-
-    mode = sys.argv[1]
-    simsvr = SimServer()
-    daemon = Daemon("simsvr", simsvr)
-
-    if 'start' == mode:
-        daemon.start()
-    elif 'stop' == mode:
-        daemon.dstop()
-    elif 'restart' == mode:
-        daemon.restart()
-    elif 'run' == mode:
-        daemon.run()
-    else:
-        print("Unknown command")
-        sys.exit(2)
-    sys.exit(0)
-
+    app.run(debug=True, host='0.0.0.0', port=80)

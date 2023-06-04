@@ -12,11 +12,13 @@ import json
 import datetime
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+from collections import deque
+
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.exceptions import ConnectionException
 
-from deamon import Runner, Daemon
+from daemon import Runner, Daemon
 
 class Connection:
     def __init__(self, option, logger):
@@ -41,7 +43,7 @@ class Connection:
             self._isconnected = ret
             return ret
         except Exception as ex:
-            self._logger.warn("Fail to connect MODBUS [" + str(self._option) + "] : " + str(ex))
+            self._logger.warning("Fail to connect MODBUS [" + str(self._option) + "] : " + str(ex))
             self._isconnected = False
             return None
 
@@ -51,9 +53,16 @@ class Connection:
 
     def readregister(self, addr, count, unit):
         try:
-            return self._conn.read_holding_registers(addr, count, unit=unit)
+            res = self._conn.read_holding_registers(addr, count, unit=unit)
+            if res is None or res.isError():
+                self._logger.warning ("Fail to read register : " + str(res))
+                return None
+            if len(res.registers) != count:
+                self._logger.waring("Count is not matched : " + str(res.registers))
+            return res.registers
+
         except Exception as ex:
-            self._logger.warn("fail to read holding registers[" + str(addr) + "] : "+ str(ex))
+            self._logger.warning("fail to read holding registers[" + str(addr) + "] : "+ str(ex))
             self._isconnected = False
             return None
 
@@ -61,13 +70,13 @@ class Connection:
         try:
             res = self._conn.write_registers(addr, content, unit=unit)
             if res.isError():
-                self._logger.warn("Fail to write register." + str(unit) + ","
+                self._logger.warning("Fail to write register." + str(unit) + ","
                         + str(addr) + ":" + str(res))
                 return False
             else:
                 return True
         except Exception as ex:
-            self._logger.warn("fail to write holding registers[" + str(addr) + "] : " + str(ex))
+            self._logger.warning("fail to write holding registers[" + str(addr) + "] : " + str(ex))
             self._isconnected = False
             return False
 
@@ -83,9 +92,9 @@ class Connection:
             return self.connect()
 
 class KSMaster(Runner):
-    def __init__(self, option, logger):
+    def __init__(self, option, mode):
         self._option = option
-        self._logger = logger
+        self._mode = mode       # 1 : sim, 2 : real, 3: sim & real
         self._client = None
         self._connected = False
         self._modbus = [None, None]
@@ -109,7 +118,7 @@ class KSMaster(Runner):
             self._client.loop_start()
             self._connected = True
         except Exception as ex:
-            self._logger.warn("fail to connect mqttserver : " + str(ex))
+            self._logger.warning("fail to connect mqttserver : " + str(ex))
             self._connected = False
         return self._connected
 
@@ -118,7 +127,7 @@ class KSMaster(Runner):
         self._connected = False
 
     def onclose(self, client, udata, sock):
-        self._logger.warn("close mqtt connection.")
+        self._logger.warning("close mqtt connection.")
         self._connected = False
 
     def process(self):
@@ -143,9 +152,8 @@ class KSMaster(Runner):
             self._msgq.append((blk.topic, blk.payload))
 
         except Exception as ex:
-            self._logger.warn("fail to call onmsg: " + str(ex) + " "  + blk.payload)
+            self._logger.warning("fail to call onmsg: " + str(ex) + " "  + blk.payload)
             
-
     def _connectmodbus(self, idx):
         if self._modbus[idx]:
             self._modbus[idx].close()
@@ -153,28 +161,46 @@ class KSMaster(Runner):
         self._modbus[idx].connect()
 
     def connectmodbus(self):
-        for idx in range(2):
-            if self._keywords[idx] in self._option["modbus"]:
-                self._connectmodbus(idx)
+        if self._mode == 1:
+            self._connectmodbus(0)  # sim
+            if self._modbus[1]:
+                self._modbus[1].close()
+        elif self._mode == 2:
+            if self._modbus[0]:
+                self._modbus[0].close()
+            self._connectmodbus(1)  # real
+        elif self._mode == 3:
+            self._connectmodbus(0)  # sim
+            self._connectmodbus(1)  # real
 
     def write(self, msg):
         ret = [None, None]
-        for idx in range(2):
-            if self._modbus[idx]: 
-                ret[idx] = self._modbus[idx].write(msg["addr"], msg["content"], self._option["modbus"][self._keywords[idx]]["unit"])
-                if ret[idx] is None:
-                    self._modbus[idx].check()
+        if self._modbus[0]: 
+            # 시뮬레이터의 unit 은 항상 1
+            ret[0] = self._modbus[0].writeregister(msg["addr"], msg["content"], 1)
+            if ret[0] is None:
+                self._modbus[0].check()
+
+        if self._modbus[1]: 
+            ret[1] = self._modbus[1].writeregister(msg["addr"], msg["content"], msg["unit"])
+            if ret[1] is None:
+                self._modbus[1].check()
 
         msg["ret"] = ret
         self.publish("simx/res", msg)
 
     def read(self, msg):
         ret = [None, None]
-        for idx in range(2):
-            if self._modbus[idx]: 
-                ret[idx] = self._modbus[idx].readregister(msg["addr"], msg["count"], self._option["modbus"][self._keywords[idx]]["unit"])
-                if ret[idx] is None:
-                    self._modbus[idx].check()
+        if self._modbus[0]: 
+            # 시뮬레이터의 unit 은 항상 1
+            ret[0] = self._modbus[0].readregister(msg["addr"], msg["count"], 1)
+            if ret[0] is None:
+                self._modbus[0].check()
+
+        if self._modbus[1]: 
+            ret[1] = self._modbus[1].readregister(msg["addr"], msg["count"], msg["unit"])
+            if ret[1] is None:
+                self._modbus[1].check()
 
         msg["ret"] = ret
         self.publish("simx/reg", msg)
@@ -185,16 +211,18 @@ class KSMaster(Runner):
                 hostname=self._option["mqtt"]["host"],
                 port=self._option["mqtt"]["port"])
         except Exception as ex:
-            self._logger.warn("publish " + str((topic, msg)) + " exception : " + str(ex))
+            self._logger.warning("publish " + str((topic, msg)) + " exception : " + str(ex))
 
     def stop(self):
         self._isrunning = False
 
     def initialize(self):
         self.connect()
-        self._isrunning = True
+        self.connectmodbus()
 
     def run(self, debug=False):
+        self._isrunning = not debug 
+
         while self._isrunning:
             self.process()
             time.sleep(0.1)
@@ -203,28 +231,31 @@ class KSMaster(Runner):
         self.close()
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage : python ksmaster.py [start|stop|restart|run]")
+    import sys
+
+    if len(sys.argv) != 3:
+        print("Usage : python3 ksmaster.py [start|stop|restart|run] [1|2|3]")
         sys.exit(2)
 
     option = {
         "mqtt" : {"host": "127.0.0.1", "port": 1883, "keepalive": 60},
         "modbus": {
-            "sim" : {"port": "/dev/ttySIM", "baudrate": 9600, "unit":1},
-            "real" : {"port": "/dev/ttyUSB0", "baudrate": 9600, "unit":1}
+            "sim" : {"method": "rtu", "port": "/dev/ttySim1", "baudrate": 9600, "timeout":5},
+            "real" : {"method": "rtu", "port": "/dev/ttyUSB0", "baudrate": 9600, "timeout":30}
         }
     }
 
-    master = KSMaster(option)
-    daemon = Daemon("ksmaster", master)
+    runtype = sys.argv[1]
+    master = KSMaster(option, int(sys.argv[2]))
+    daemon = Daemon("ksmaster", master, runtype)
 
-    if 'start' == mode:
+    if 'start' == runtype:
         daemon.start()
-    elif 'stop' == mode:
+    elif 'stop' == runtype:
         daemon.dstop()
-    elif 'restart' == mode:
+    elif 'restart' == runtype:
         daemon.restart()
-    elif 'run' == mode:
+    elif 'run' == runtype:
         daemon.run()
     else:
         print("Unknown command")
