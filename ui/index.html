@@ -15,6 +15,7 @@
   $( function() {
     $( "#tabs" ).tabs();
     $( "input[type='radio']" ).checkboxradio({icon:false});
+    $(".cmdbtn").button();
     ui = SimXUI();
     /*
     orig = [0, 0, 3, 4, 20, 21, 30, 0];
@@ -78,25 +79,27 @@
 		<input type="radio" name="mode" id="simnctrl" value="3">
 		<label for="nut">양액기 작동 모드</label>
 		<input type="radio" name="mode" id="nut" value="4">
-    <br>
+    <p>
 		<label for="unit">슬레이브 아이디</label>
     <input type="number" name="unit" id="unit" value=1>
 	  </fieldset>
+    <p class="modedesc"></p>
   </div>
   <div id="tabs-2">
     <h2>노드정보</h2>
-    <p>노드정보를 불러옵니다. 디폴트 레지스터맵을 사용하신다면 노드정보는 항상 고정값 입니다.</p>
+    <p>노드정보를 확인합니다. 디폴트 레지스터맵을 사용하신다면 노드정보는 항상 고정값 입니다.</p>
 	  <div id="sni" class="ui-widget"> </div>
 	  <div id="rni" class="ui-widget"> </div>
   </div>
   <div id="tabs-3">
     <h2>장치정보</h2>
-    <p id="test"></p>
+    <p>장치정보를 확인합니다. 사용하지 않는 장치의 코드값은 0 입니다.</p>
 	  <div id="sdi" class="ui-widget"> </div>
 	  <div id="rdi" class="ui-widget"> </div>
   </div>
   <div id="tabs-4">
-    <h2>양액기제어권</h2>
+    <h2>양액기노드 제어권</h2>
+    <p>양액기 노드의 제어권을 변경하고, 해당 정보를 확인 합니다. </p>
     <fieldset>
 		<legend>제어권</legend>
 		<label for="local">로컬(양액기 자동제어)</label>
@@ -112,8 +115,10 @@
   </div>
   <div id="tabs-5">
     <h2>양액기제어</h2>
+    <p>양액기를 제어하고, 제어 현황을 확인합니다. </p>
     <fieldset>
 		<legend>양액기제어</legend>
+    <!--
 		<label for="off">정지</label>
 		<input type="radio" name="command" id="off" value=0 >
 		<label for="once">1회관수</label>
@@ -122,13 +127,18 @@
 		<input type="radio" name="command" id="area" value=402 >
 		<label for="param">파라미터관수(양액관수)</label>
 		<input type="radio" name="command" id="param" value=403 >
+    -->
+    <button class="cmdbtn" name="stop" cmd="0">정지</button>
+    <button class="cmdbtn" name="once" cmd="401">1회관수</button>
+    <button class="cmdbtn" name="irrigate" cmd="402">구역관수(원수관수)</button>
+    <button class="cmdbtn" name="fertigate" cmd="403">파라미터관수(양액관수)</button>
 
-    <br>
+    <p>
 		<label for="start-area">시작 구역</label>
     <input type="number" name="start-area" id="start-area" value=1>
 		<label for="stop-area">종료 구역</label>
     <input type="number" name="stop-area" id="stop-area" value=5>
-    <br>
+    <p>
 		<label for="on-sec">작동 시간</label>
     <input type="number" name="on-sec" id="on-sec" value=30>
 		<label for="EC">EC</label>
@@ -142,6 +152,7 @@
   </div>
   <div id="tabs-6">
     <h2>센서정보</h2>
+    <p>센서의 정보를 확인합니다. </p>
 	  <div id="sss" class="ui-widget"> </div>
 	  <div id="rss" class="ui-widget"> </div>
   </div>

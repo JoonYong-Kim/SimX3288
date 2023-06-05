@@ -2,8 +2,8 @@
 
 stopall () {
   echo "stop all"
-  kill -ef -9 $(head -n 1 /var/run/ns2023.pid)
-  kill -ef -9 $(head -n 1 /var/run/ksmaster.pid)
+  kill -9 $(head -n 1 /var/run/ns2023.pid)
+  kill -9 $(head -n 1 /var/run/ksmaster.pid)
 }
 
 # mode 1
@@ -17,14 +17,14 @@ startsim () {
 # mode 2
 startctrl () {
   echo "start controller"
-  python3 ../svr/ksmaster.py run 2
+  python3 ../svr/ksmaster.py start 2
   echo "2" > ../mode/real.mode
 }
 
 # mode 3
 startsimnctrl() {
   echo "start simulator & controller"
-  python3 ../svr/ksmaster.py run 3
+  python3 ../svr/ksmaster.py start 3
   python3 ../../nutrient_supply_controller/test/ns2023.py start sim
   echo "3" > ../mode/real.mode
 }

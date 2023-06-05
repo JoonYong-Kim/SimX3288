@@ -8,7 +8,7 @@
 var SimXComm = function (host, ui) {
   var _host = host;
   var _opid = 1;
-  var _mode = 3;
+  var _mode = 0;
   var _ui = ui;
   var _client = mqtt.connect("ws://" + host + ":9001", 
     {clean: true, connectTimeout: 4000, clientId: 'simx'});
@@ -76,10 +76,14 @@ var SimXComm = function (host, ui) {
     read(201, 3, unit);
     read(204, 60, unit);
     read(401, 6, unit);
+
+    getmode();
   }
 
   var setmode = function(mode) {
+    console.log("setmode : " + mode);
     _mode = mode;
+    _ui.updatemodedesc(_mode);
   }
 
   var getopid = function() {
@@ -144,11 +148,27 @@ var SimXComm = function (host, ui) {
     return [buf16[0], buf16[1]];
   }
 
+  var modechange = function (mode) {
+    console.log("mode change : " + mode);
+    $.post("/modechange", {"mode":mode}, function(param) { console.log ("sent"); }, 'json')
+      .done(function(param) { console.log ("changed. wait for a while"); })
+      .fail(function(param) { console.log ("fail to mode change"); })
+      .always(function(param) { ; });
+  }
+
+  var getmode = function() {
+    $.get("/mode", function(param) { console.log ("sent"); })
+      .done(function(param) { console.log (param); setmode(JSON.parse(param)["real"]); })
+      .fail(function(param) { console.log ("fail to mode change"); })
+      .always(function(param) { ; });
+  }
 
   return {
     initialize: initialize,
     setmode: setmode,
     updateinfo: updateinfo,
+    modechange: modechange,
+    getmode: getmode,
     control: control,
     stop: stop,
     once: once,

@@ -354,6 +354,22 @@ var SimXUI = function () {
     }
   }
 
+  var updatemodedesc = function (mode) {
+    uimode = $("input[name='mode']:checked").val();
+    console.log("ui mode desc: " + [uimode, mode])
+    if (uimode == mode) {
+      $(".modedesc").text("작동모드가 정상적으로 작동합니다.");
+      // enable all input
+      $("input[name='control']:radio").prop('disabled', false);
+      $(".cmdbtn").prop('disabled', false);
+    } else {
+      $(".modedesc").text("작동모드를 변환중에 있습니다. 기다려 주세요.");
+      // disable all input
+      $("input[name='control']:radio").prop('disabled', true);
+      $(".cmdbtn").prop('disabled', true);
+    }
+  }
+
   return {
     setNI: setNI,
     setDI: setDI,
@@ -361,7 +377,8 @@ var SimXUI = function () {
     setNDS: setNDS,
     setNSC: setNSC,
     setNSS: setNSS,
-    setSS: setSS
+    setSS: setSS,
+    updatemodedesc: updatemodedesc
   }
 }
 
