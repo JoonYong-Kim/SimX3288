@@ -1,0 +1,11 @@
+[Unit]
+Description=Web Service for KS X 3288 Simulator
+
+[Service]
+WorkingDirectory=/home/debian/SimX3288/svr
+ExecStart=python3 simserver.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

@@ -28,4 +28,8 @@ cp virtualport.service /lib/systemd/system/
 systemctl daemon-reload
 service virtualport start
 
+cp simweb.service /lib/systemd/system/
+systemctl daemon-reload
+service simweb start
+
 pip3 install paho.mqtt pymodbus twisted
