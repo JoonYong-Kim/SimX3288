@@ -1,5 +1,9 @@
 #/bin/bash
 
+HOME=/home/debian
+SIMX=$(HOME)/SimX3288
+NUT=$(HOME)/nutrient_supply_controller
+
 stopall () {
   echo "stop all"
   kill -9 $(head -n 1 /var/run/ns2023.pid)
@@ -9,31 +13,31 @@ stopall () {
 # mode 1
 startsim () {
   echo "start simulator"
-  python3 ../svr/ksmaster.py start 1
-  python3 ../../nutrient_supply_controller/test/ns2023.py start sim
-  echo "1" > ../mode/real.mode
+  cd $(SIMX)/svr; python3 ksmaster.py start 1
+  cd $(NUT)/test; python3 ns2023.py start sim
+  echo "1" > $(SIMX)/mode/real.mode
 }
 
 # mode 2
 startctrl () {
   echo "start controller"
-  python3 ../svr/ksmaster.py start 2
-  echo "2" > ../mode/real.mode
+  cd $(SIMX)/svr; python3 ksmaster.py start 2
+  echo "2" > $(SIMX)/mode/real.mode
 }
 
 # mode 3
 startsimnctrl() {
   echo "start simulator & controller"
-  python3 ../svr/ksmaster.py start 3
-  python3 ../../nutrient_supply_controller/test/ns2023.py start sim
-  echo "3" > ../mode/real.mode
+  cd $(SIMX)/svr; python3 ksmaster.py start 3
+  cd $(NUT)/test; python3 ns2023.py start sim
+  echo "3" > $(SIMX)/mode/real.mode
 }
 
 # mode 4
 startnut () {
   echo "start nutrient-supplier"
-  python3 ../../nutrient_supply_controller/test/ns2023.py start real
-  echo "4" > ../mode/real.mode
+  cd $(NUT)/test; python3 ns2023.py start real
+  echo "4" > $(SIMX)/mode/real.mode
 }
 
 uimode=$(head -n 1 ../mode/ui.mode)

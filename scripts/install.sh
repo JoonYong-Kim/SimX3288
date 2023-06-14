@@ -23,3 +23,9 @@ allow_anonymous true
 " > /etc/mosquitto/mosquitto.conf
 
 service mosquitto restart
+
+cp virtualport.service /lib/systemd/system/
+systemctl daemon-reload
+service virtualport start
+
+pip3 install paho.mqtt pymodbus twisted
