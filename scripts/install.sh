@@ -2,7 +2,7 @@
 
 apt install -y socat mosquitto mosquitto-clients
 
-cat "# Place your local configuration in /etc/mosquitto/conf.d/
+echo "# Place your local configuration in /etc/mosquitto/conf.d/
 #
 # A full description of the configuration file is at
 # /usr/share/doc/mosquitto/examples/mosquitto.conf.example
