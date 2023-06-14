@@ -356,7 +356,7 @@ var SimXUI = function () {
 
   var updatemodedesc = function (mode) {
     uimode = $("input[name='mode']:checked").val();
-    console.log("ui mode desc: " + [uimode, mode])
+    //console.log("ui mode desc: " + [uimode, mode])
     if (uimode == mode) {
       $(".modedesc").text("작동모드가 정상적으로 작동합니다.");
       // enable all input
@@ -370,6 +370,32 @@ var SimXUI = function () {
     }
   }
 
+  var confirmdlg = function(title, message, param, yesfunc, nofunc) {
+    $('<div></div>').appendTo('body')
+    .html('<div><h6>' + message + '?</h6></div>')
+    .dialog({
+      modal: true,
+      title: title,
+      zIndex: 10000,
+      autoOpen: true,
+      width: 'auto',
+      resizable: false,
+      buttons: {
+        Yes: function() {
+          yesfunc(param);
+          $(this).dialog("close");
+        },
+        No: function() {
+          nofunc();
+          $(this).dialog("close");
+        }
+      },
+      close: function(event, ui) {
+        $(this).remove();
+      }
+    });
+  }
+
   return {
     setNI: setNI,
     setDI: setDI,
@@ -378,6 +404,7 @@ var SimXUI = function () {
     setNSC: setNSC,
     setNSS: setNSS,
     setSS: setSS,
+    confirmdlg: confirmdlg,
     updatemodedesc: updatemodedesc
   }
 }

@@ -10,6 +10,7 @@ var SimXComm = function (host, ui) {
   var _opid = 1;
   var _mode = 0;
   var _ui = ui;
+  var _cnt = 1;
   var _client = mqtt.connect("ws://" + host + ":9001", 
     {clean: true, connectTimeout: 4000, clientId: 'simx'});
   
@@ -67,8 +68,10 @@ var SimXComm = function (host, ui) {
 
   var updateinfo = function () {
     unit = $("input[name='unit']").val();
-    read(1, 8, unit);
-    read(101, 21, unit);
+    if (_cnt % 5 == 1) {
+      read(1, 8, unit);
+      read(101, 21, unit);
+    }
 
     read(501, 3, unit);
     read(504, 10, unit);
@@ -78,10 +81,11 @@ var SimXComm = function (host, ui) {
     read(401, 6, unit);
 
     getmode();
+    _cnt++;
   }
 
   var setmode = function(mode) {
-    console.log("setmode : " + mode);
+    //console.log("setmode : " + mode);
     _mode = mode;
     _ui.updatemodedesc(_mode);
   }
@@ -150,16 +154,16 @@ var SimXComm = function (host, ui) {
 
   var modechange = function (mode) {
     console.log("mode change : " + mode);
-    $.post("/modechange", {"mode":mode}, function(param) { console.log ("sent"); }, 'json')
-      .done(function(param) { console.log ("changed. wait for a while"); })
-      .fail(function(param) { console.log ("fail to mode change"); })
+    $.post("/modechange", {"mode":mode}, function(param) { /* console.log ("sent")*/; }, 'json')
+      .done(function(param) { /*console.log ("changed. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to mode change")*/; })
       .always(function(param) { ; });
   }
 
   var getmode = function() {
-    $.get("/mode", function(param) { console.log ("sent"); })
-      .done(function(param) { console.log (param); setmode(JSON.parse(param)["real"]); })
-      .fail(function(param) { console.log ("fail to mode change"); })
+    $.get("/mode", function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /* console.log (param)*/; setmode(JSON.parse(param)["real"]); })
+      .fail(function(param) { /* console.log ("fail to mode change")*/; })
       .always(function(param) { ; });
   }
 

@@ -33,12 +33,20 @@ var SimXAct = function (ui, comm) {
   var setAction = function() {
     $("input[name='mode']:radio").change (function () {
       console.log("mode change : " + this.value);
-      _comm.modechange(this.value);
+      _ui.confirmdlg("작동모드 변경", "작동모드를 변경하시겠습니까?", this.value, function(mode) {
+        _comm.modechange(mode);
+      }, function () {
+        // 작동모드 선택 원래대로.
+      });
     });
 
     $("input[name='control']:radio").change (function () {
       console.log("control : " + this.value);
-      _comm.control(this.value);
+      _ui.confirmdlg("제어권 변경", "제어권을 변경하시겠습니까?", this.value, function(control) {
+        _comm.control(control);
+      }, function () {
+        // 제어권 선택 원래대로.
+      });
     });
 
     /*
@@ -49,7 +57,10 @@ var SimXAct = function (ui, comm) {
     */
     $(".cmdbtn").click (function () {
       console.log("command : " + $(this).attr('name'));
-      setcommand($(this).attr('cmd'));
+      _ui.confirmdlg("명령실행", "명령을 실행하시겠습니까?", $(this).attr('cmd'), function(cmd) {
+        setcommand(cmd);
+      }, function () {
+      });
     });
   }
 

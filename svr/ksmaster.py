@@ -58,7 +58,7 @@ class Connection:
                 self._logger.warning ("Fail to read register : " + str(res))
                 return None
             if len(res.registers) != count:
-                self._logger.waring("Count is not matched : " + str(res.registers))
+                self._logger.warning("Count is not matched : " + str(res.registers))
             return res.registers
 
         except Exception as ex:
@@ -84,11 +84,10 @@ class Connection:
         return self._isconnected
 
     def check(self):
-        self._logger.info("Check connection~"  + self._option["port"])
         if self._isconnected is True:
             return True
         else:
-            self._logger.info("Check connection~"  + self._option["port"])
+            self._logger.info("disconnected?? try to connect~"  + self._option["port"])
             return self.connect()
 
 class KSMaster(Runner):
@@ -175,6 +174,7 @@ class KSMaster(Runner):
 
     def write(self, msg):
         ret = [None, None]
+        time.sleep(0.1)
         if self._modbus[0]: 
             # 시뮬레이터의 unit 은 항상 1
             ret[0] = self._modbus[0].writeregister(msg["addr"], msg["content"], 1)
@@ -191,6 +191,7 @@ class KSMaster(Runner):
 
     def read(self, msg):
         ret = [None, None]
+        time.sleep(0.1)
         if self._modbus[0]: 
             # 시뮬레이터의 unit 은 항상 1
             ret[0] = self._modbus[0].readregister(msg["addr"], msg["count"], 1)
