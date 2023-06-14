@@ -2,7 +2,7 @@
 
 HOME=/home/debian
 SIMX=$HOME/SimX3288
-NUT=$HOME/nutrient_supply_controller
+NUT=$SIMX/nutrient_supply_controller
 
 stopall () {
   echo "stop all"
