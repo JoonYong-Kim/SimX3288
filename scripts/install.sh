@@ -27,9 +27,11 @@ service mosquitto restart
 cp virtualport.service /lib/systemd/system/
 systemctl daemon-reload
 service virtualport start
+systemctl enable virtualport
 
 cp simweb.service /lib/systemd/system/
 systemctl daemon-reload
 service simweb start
+systemctl enable simweb
 
 pip3 install paho.mqtt pymodbus twisted
