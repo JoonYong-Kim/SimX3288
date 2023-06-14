@@ -1,0 +1,8 @@
+{
+  "sim" : {
+    "method":"rtu", "port":"/dev/ttySim0", "baudrate":9600, "timeout":5
+  },
+  "real" : {
+    "method":"rtu", "port":"/dev/ttyUSB0", "baudrate":9600, "timeout":5
+  }
+}
