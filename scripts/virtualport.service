@@ -1,0 +1,10 @@
+[Unit]
+Description=Virtual Port for KS X 3288 Simulator
+
+[Service]
+ExecStart=/usr/bin/socat -d -d PTY,link=/dev/ttySim0 PTY,link=/dev/ttySim1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
