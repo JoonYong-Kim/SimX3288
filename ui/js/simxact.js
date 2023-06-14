@@ -40,9 +40,9 @@ var SimXAct = function (ui, comm) {
       });
     });
 
-    $("input[name='control']:radio").change (function () {
-      console.log("control : " + this.value);
-      _ui.confirmdlg("제어권 변경", "제어권을 변경하시겠습니까?", this.value, function(control) {
+    $(".ctrlbtn").click(function () {
+      console.log("control : " + $(this).attr('control'));
+      _ui.confirmdlg("제어권 변경", "제어권을 변경하시겠습니까?", $(this).attr('control'), function(control) {
         _comm.control(control);
       }, function () {
         // 제어권 선택 원래대로.

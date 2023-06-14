@@ -85,9 +85,9 @@ var SimXComm = function (host, ui) {
   }
 
   var setmode = function(mode) {
-    //console.log("setmode : " + mode);
-    _mode = mode;
-    _ui.updatemodedesc(_mode);
+    //console.log("setmode : " + mode["real"] + " " + mode["ui"]);
+    _mode = mode["real"];
+    _ui.updatemodedesc(mode);
   }
 
   var getopid = function() {
@@ -162,7 +162,7 @@ var SimXComm = function (host, ui) {
 
   var getmode = function() {
     $.get("/mode", function(param) { /* console.log ("sent")*/; })
-      .done(function(param) { /* console.log (param)*/; setmode(JSON.parse(param)["real"]); })
+      .done(function(param) { /* console.log (param)*/; setmode(JSON.parse(param)); })
       .fail(function(param) { /* console.log ("fail to mode change")*/; })
       .always(function(param) { ; });
   }

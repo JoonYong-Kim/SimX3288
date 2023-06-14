@@ -19,7 +19,11 @@ def getmode():
     mode = fp.readline()
     fp.close()
 
-    return json.dumps({"real": mode.strip()})
+    fp = open("../mode/ui.mode", "r")
+    mode = fp.readline()
+    fp.close()
+
+    return json.dumps({"real": mode.strip(), "ui": mode.strip()})
 
 @app.route("/modechange", methods=['POST'])
 def modechange():
