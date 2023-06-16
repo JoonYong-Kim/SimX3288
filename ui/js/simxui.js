@@ -121,12 +121,10 @@ var SimXUI = function () {
       if (template[i] == "short") {
         parsed += "<td" + checkcol(list, comp, i, null) + ">" + list[j] + "</td>";
       } else if (template[i] == "float") {
-        //parsed += "<td colspan=\"2\"" + checkcol(list, comp, i, i+1) + ">" + getfloat(list[j], list[j+1]) + "</td>";
         parsed += "<td colspan=\"2\">" + getfloat(list[j], list[j+1]) + "</td>";
         j++;
         src += "<td" + checkcol(list, comp, i, null) + ">" + list[j] + "</td>";
       } else if (template[i] == "int") {
-        //parsed += "<td colspan=\"2\"" + checkcol(list, comp, i, i+1) + ">" + getint(list[j], list[j+1]) + "</td>";
         parsed += "<td colspan=\"2\">" + getint(list[j], list[j+1]) + "</td>";
         j++;
         src += "<td" + checkcol(list, comp, i, null) + ">" + list[j] + "</td>";
@@ -196,13 +194,6 @@ var SimXUI = function () {
     header = ["501 제어명령", "502 명령ID", "503 제어권"];
     template = ["command", "short", "control"];
     html = "<h3>양액기노드 제어정보</h3>";
-    /*
-    if (id[0] == 's') {
-      html = "<h3>시뮬레이터 양액기노드 제어정보</h3>";
-    } else {
-      html = "<h3>실장비 양액기노드 제어정보</h3>";
-    }
-    */
     html += genTable(id, header, list, null, template);
     return html;
   }
@@ -227,15 +218,12 @@ var SimXUI = function () {
     header = ["504 제어명령", "505 명령ID", "506 시작구역", "507 종료구역", "508 관수시간(초)1", "509 관수시간(초)2", "510 EC설정1", "511 EC설정2", "512 pH설정1", "513 pH설정2"];
     template = ["command", "short", "short", "short", "int", "float", "float"];
     html = "<h3>양액기 제어정보</h3>";
-    /*
-    if (id[0] == 's') {
-      html = "<h3>시뮬레이터 양액기 제어정보</h3>"
-    } else {
-      html = "<h3>실장비 양액기 제어정보</h3>"
-    }
-    */
     html += genTable(id, header, list, null, template);
     return html;
+  }
+
+  var genNSSS = function (list) {
+     return "(" + getfloat(list[0], list[1]) + "," + getfloat(list[9], list[10]) + ")";
   }
 
   var genNSS = function (id, list, comp) {
@@ -347,10 +335,14 @@ var SimXUI = function () {
     if (mode == "1" || mode == "3") {
       ss = genSS("sss-t", sim, null);
       $("#sss").html(ss);
+      nsss = genNSSS(sim);
+      $("#snsss").html(nsss);
     }
     if (mode == "2" || mode == "3") {
       ss = genSS("rss-t", real, sim);
       $("#rss").html(ss);
+      nsss = genNSSS(real);
+      $("#rnsss").html(nsss);
     }
   }
 

@@ -17,6 +17,7 @@
     $( "input[type='radio']" ).checkboxradio({icon:false});
     $(".ctrlbtn").button();
     $(".cmdbtn").button();
+    $(".simbtn").button();
     ui = SimXUI();
 
     comm = SimXComm(window.location.hostname, ui);
@@ -51,6 +52,7 @@
     <li><a href="#tabs-4">양액기제어권</a></li>
     <li><a href="#tabs-5">양액기제어</a></li>
     <li><a href="#tabs-6">센서정보</a></li>
+    <li><a href="#tabs-7">시뮬레이터제어</a></li>
   </ul>
   <div id="tabs-1">
     <h2>기본설정</h2>
@@ -100,16 +102,6 @@
     <p>양액기를 제어하고, 제어 현황을 확인합니다. 제어권이 리모트에 있지 않다면, 작동하지 않습니다.</p>
     <fieldset>
 		<legend>양액기제어</legend>
-    <!--
-		<label for="off">정지</label>
-		<input type="radio" name="command" id="off" value=0 >
-		<label for="once">1회관수</label>
-		<input type="radio" name="command" id="once" value=401 >
-		<label for="area">구역관수(원수관수)</label>
-		<input type="radio" name="command" id="area" value=402 >
-		<label for="param">파라미터관수(양액관수)</label>
-		<input type="radio" name="command" id="param" value=403 >
-    -->
     <button class="cmdbtn" name="stop" cmd="0">정지</button>
     <button class="cmdbtn" name="once" cmd="401">1회관수</button>
     <button class="cmdbtn" name="irrigate" cmd="402">구역관수(원수관수)</button>
@@ -130,7 +122,9 @@
 	  </fieldset>
 	  <div id="nsc" class="ui-widget"> </div>
 	  <div id="snss" class="ui-widget"> </div>
+	  <div id="snsss" class="ui-widget"> </div>
 	  <div id="rnss" class="ui-widget"> </div>
+	  <div id="rnsss" class="ui-widget"> </div>
   </div>
   <div id="tabs-6">
     <h2>센서정보</h2>
@@ -138,9 +132,16 @@
 	  <div id="sss" class="ui-widget"> </div>
 	  <div id="rss" class="ui-widget"> </div>
   </div>
-</div>
  
-<div id="cmd-form" title="제어명령전송">
+  <div id="tabs-7">
+    <h2>시뮬레이터 제어</h2>
+    <p>시뮬레이터를 제어합니다. </p>
+    <fieldset>
+		<legend>제어</legend>
+    <button class="simbtn" name="reset">리셋(SW재시작)</button>
+    <button class="simbtn" name="reboot">리부팅</button>
+	  </fieldset>
+  </div>
 </div>
  
 </body>

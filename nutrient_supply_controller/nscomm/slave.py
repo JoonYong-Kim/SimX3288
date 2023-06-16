@@ -30,9 +30,12 @@ class NSCallbackDataBlock(ModbusSequentialDataBlock):
         self._que = queue
 
     def setValues(self, address, values):
-        log.debug("Receive address, value : %s, %s", address, values)
+        if address > 500:
+            log.info("Receive address, value : %s, %s", address -1, values)
         with self._lock:
             super(NSCallbackDataBlock, self).setValues(address, values)
+            if address > 500:
+                log.info("Enque : %s, %s", address -1, values)
             self._que.put((address, values))
 
     def getValues(self, address, count):

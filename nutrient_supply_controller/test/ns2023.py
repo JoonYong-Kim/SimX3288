@@ -40,6 +40,35 @@ class NutSim:
 
         self._nsec = self.getnsec()
         self._mqlog = mqttlog
+        self.loadstatus()
+
+    def savestatus(self):
+        try:
+            fp = open("conf/nut.stat", "w")
+            status = {"time": str(datetime.now().date()), "nd" : self._nd, "nut" : self._nut, "sen" : [self._pec, self._pph, self._flow]}
+            fp.write(json.dumps(status))
+            fp.close()
+        except:
+            self._mqlog.info ("Fail to save status")
+
+    def loadstatus(self):
+        try:
+            fp = open("conf/nut.stat", "r")
+            status = json.loads(fp.read())
+            fp.close()
+        except:
+            return
+
+        if str(datetime.now().date()) == status["time"]:
+            self._nd = status["nd"]
+            self._nut = status["nut"]
+            self._pec = status["sen"][0]
+            self._pph = status["sen"][1]
+            self._flow = status["sen"][2]
+            self._mqlog.info ("Status reloaded!!")
+        else:
+            self._mqlog.info ("Old Status was not reloaded!!")
+
 
     def getstatus(self):
         return [self._nd, self._nut, self._pec, self._pph, self._rad, self._flow]
@@ -192,6 +221,7 @@ class NutSim:
         self.updatenut(gap, nsec)
 
         self._nsec = nsec
+        self.savestatus()
         return True
 
     def getregmap(self):
@@ -262,13 +292,12 @@ class NS2023(Runner):
                 self._sim.setcommand(nutcmd)
 
             if self._sim.execute():
+                n = n + 1
+                if n % 10 == 0:
+                    self._logger.info("Update register~" + str(self._sim.getstatus()))
                 self.update()
 
             time.sleep(0.1)
-
-            n = n + 1
-            if n % 1000:
-                self._logger.info("I'm OK~ " + str(self._sim.getstatus()))
 
 if __name__ == '__main__':
     import sys

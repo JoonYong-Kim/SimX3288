@@ -23,18 +23,22 @@ class Actuator:
         self._devreg = devreg
         self._register = register
         self._addr, self._len, self._opid = devreg.getcontroladdress()
+        log.info("Initialize act : " + str([self._addr, self._len, self._opid]))
         self._que = deque()
         self._prevopid = 0
 
     def makerequest(self):
+        log.info("Actuator make request : " + str([self._opid, self._register[self._opid], self._prevopid]))
         if self._register[self._opid] != self._prevopid and self._register[self._opid] != 0:
            req = self._devreg.getcontrol(self._register[self._addr:self._addr + self._len])
-           log.debug("received a request %s", req)
+           log.info("Received a request %s", req)
            if req["operation"] == 0:
                self._que = deque([req])
            else:
                self._que.append(req)
            self._prevopid = req["opid"]
+        else:
+            log.info ("Fail to make request.")
 
     def getrequest(self):
         return self._que.popleft()
@@ -60,8 +64,11 @@ class RequestManager:
         for idx, val in enumerate(vals):
             self._register[addr + idx] = val
 
+        if addr > 500:
+            log.info("ReqMng received %s, %s", addr-1, vals)
         for opid in self._devmap.keys():
             if addr <= opid < addr + len(vals):
+                log.info("ReqMng make request :" + str(opid))
                 self._devmap[opid].makerequest()
 
     def noderequest(self):
@@ -113,7 +120,8 @@ class NSCommunicator:
         try:
             while True:
                 addr, vals = self._recvque.get(True, 0.1)
-                log.debug("received %s, %s", addr-1, vals)
+                if addr > 500:
+                    log.info("Communicator received %s, %s", addr-1, vals)
                 self._reqmng.update(addr-1, vals)
         except queue.Empty:
             pass
