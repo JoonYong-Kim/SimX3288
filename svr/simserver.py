@@ -76,7 +76,7 @@ def halt():
 
 @app.route("/upgrade", methods=['GET'])
 def upgrade():
-    os.system('su -c debian git pull')
+    os.system('su -c "git pull" debian')
     return json.dumps({"status": "success"})
 
 @app.route("/setalert", methods=['POST'])
