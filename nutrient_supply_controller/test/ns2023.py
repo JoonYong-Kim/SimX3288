@@ -44,6 +44,7 @@ class NutSim:
 
     def isalert(self):
         try:
+            prev = self._nut["alert"]
             fp = open("alert", "r")
             alt = int(fp.readline())
             if alt != 0:
@@ -54,7 +55,8 @@ class NutSim:
                 self._nut["status"] = 1
                 return True
             else:
-                self._nut["status"] = 0
+                if prev != 0:
+                    self._nut["status"] = 0
                 return False
         except:
             self._nut["alert"] = 0
@@ -191,7 +193,7 @@ class NutSim:
     def updatenut(self, gap, nsec):
         smargin = 0.1
 
-        if self.isalert():
+        if self.isalert() is True:
             return
 
         if self._cmd["operation"] in (401, 402, 403):
