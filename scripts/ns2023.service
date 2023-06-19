@@ -3,7 +3,7 @@ Description=Nutrient Supplyer for KS X 3288 Simulator
 
 [Service]
 WorkingDirectory=/home/debian/SimX3288/nutrient_supply_controller/test
-ExecStart=python3 ns2023.py start
+ExecStart=python3 ns2023.py run
 Restart=always
 
 [Install]

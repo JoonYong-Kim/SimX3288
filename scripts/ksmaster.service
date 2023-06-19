@@ -3,7 +3,7 @@ Description=Gateway for KS X 3288 Simulator
 
 [Service]
 WorkingDirectory=/home/debian/SimX3288/svr
-ExecStart=python3 ksmaster.py start
+ExecStart=python3 ksmaster.py run
 Restart=always
 
 [Install]
