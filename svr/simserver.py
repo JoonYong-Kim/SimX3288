@@ -43,6 +43,23 @@ def modechange():
 
     return json.dumps(response)
 
+@app.route("/setalert", methods=['POST'])
+def setalert():
+    if 0 <= int(request.form.get('alert')) < 11:
+        fp = open("../nutrient_supply_controller/test/alert", "w")
+        fp.write(request.form.get('alert'))
+        fp.close()
+
+        response = {
+            "status": "success"
+        }
+    else:
+        response = {
+            "status": "failure"
+        }
+
+    return json.dumps(response)
+
 @app.route("/")
 def index():
     return app.send_static_file('index.html')

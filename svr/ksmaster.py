@@ -234,8 +234,8 @@ class KSMaster(Runner):
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) != 3:
-        print("Usage : python3 ksmaster.py [start|stop|restart|run] [1|2|3]")
+    if len(sys.argv) != 2:
+        print("Usage : python3 ksmaster.py [start|stop|restart|run]")
         sys.exit(2)
 
     option = {
@@ -246,8 +246,13 @@ if __name__ == "__main__":
         }
     }
 
-    runtype = sys.argv[1]
-    master = KSMaster(option, int(sys.argv[2]))
+    fp = open("../../mode/ui.mode", "r")
+    mode = int(fp.readline())
+    fp.close()
+    if mode == 4:
+        sys.exit(0)
+
+    master = KSMaster(option, mode)
     daemon = Daemon("ksmaster", master, runtype)
 
     if 'start' == runtype:

@@ -34,4 +34,14 @@ systemctl daemon-reload
 service simweb start
 systemctl enable simweb
 
+cp ksmaster.service /lib/systemd/system/
+systemctl daemon-reload
+service ksmaster start
+systemctl enable ksmaster
+
+cp ns2023.service /lib/systemd/system/
+systemctl daemon-reload
+service ns2023 start
+systemctl enable ns2023
+
 pip3 install paho.mqtt pymodbus twisted pygments prompt_toolkit
