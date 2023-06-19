@@ -34,4 +34,4 @@ systemctl daemon-reload
 service simweb start
 systemctl enable simweb
 
-pip3 install paho.mqtt pymodbus twisted
+pip3 install paho.mqtt pymodbus twisted pygments prompt_toolkit

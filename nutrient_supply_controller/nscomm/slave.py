@@ -76,10 +76,12 @@ class NSSlave:
                 log.warning(str(ex))
 
     def startserver(self):
-        if self._option["method"] == 'tcp':
+        if self._option["method"] == "tcp":
             conn = StartTcpServer(self._context, identity=self._identity, address=(self._option["host"], self._option["port"]), framer=ModbusSocketFramer)
         elif self._option["method"] == "rtu":
             conn = StartSerialServer(self._context, port=self._option["port"], baudrate=self._option["baudrate"], timeout=self._option["timeout"], framer=ModbusRtuFramer)
+        else:
+            log.warn("Not proper method : " + self._option["method"])
 
     def execute(self):
         log.debug("slave thread")
