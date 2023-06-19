@@ -67,12 +67,12 @@ def reset():
 @app.route("/reboot", methods=['GET'])
 def reboot():
     os.system('reboot')
-    return json.dumps({})
+    return json.dumps({"status": "success"})
 
 @app.route("/halt", methods=['GET'])
-def reboot():
+def halt():
     os.system('poweroff')
-    return json.dumps({})
+    return json.dumps({"status": "success"})
 
 @app.route("/setalert", methods=['POST'])
 def setalert():
