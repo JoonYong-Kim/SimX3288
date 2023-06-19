@@ -62,6 +62,42 @@ var SimXAct = function (ui, comm) {
       }, function () {
       });
     });
+
+    $(".simbtn[name='reset']").click (function() {
+      console.log("reset");
+      _ui.confirmdlg("프로그램 리셋", "프로그램을 재실행하시겠습니까?", null, function() {
+        _comm.reset();
+      }, function () {
+        // 선택 원래대로.
+      });
+    });
+
+    $(".simbtn[name='reboot']").click (function() {
+      console.log("reboot");
+      _ui.confirmdlg("장비 재시작", "장비를 재시작 하시겠습니까?", null, function() {
+        _comm.reboot();
+      }, function () {
+        // 선택 원래대로.
+      });
+    });
+
+    $(".simbtn[name='halt']").click (function() {
+      console.log("poweroff");
+      _ui.confirmdlg("전원 끄기", "장비를 끄시겠습니까?", null, function() {
+        _comm.halt();
+      }, function () {
+        // 선택 원래대로.
+      });
+    });
+
+    $("input[name='alert']:radio").change (function () {
+      console.log("alert change : " + this.value);
+      _ui.confirmdlg("경보 변경", "경보를 강제로 설정하시겠습니까?", this.value, function(alt) {
+        _comm.setalert(alt);
+      }, function () {
+        // 경보 선택 원래대로.
+      });
+    });
   }
 
   return {

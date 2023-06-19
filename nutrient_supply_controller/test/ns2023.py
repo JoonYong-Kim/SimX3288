@@ -42,6 +42,17 @@ class NutSim:
         self._mqlog = mqttlog
         self.loadstatus()
 
+    def loadalert(self):
+        try:
+            fp = open("alert", "r")
+            alt = int(fp.readline())
+            if alt != 0:
+                self._mqlog.info ("Alert occured : " + str(alt))
+            self._nut["alert"] = alt
+            fp.close()
+        except:
+            self._mqlog.info ("Fail to load alert.")
+
     def savestatus(self):
         try:
             fp = open("conf/nut.stat", "w")
@@ -170,6 +181,11 @@ class NutSim:
 
     def updatenut(self, gap, nsec):
         smargin = 0.1
+
+        if self._nut["alert"] != 0:
+            self._nut["status"] = 1
+            return
+
         if self._cmd["operation"] in (401, 402, 403):
             if self._nut["status"] == 401:  
                 # not started

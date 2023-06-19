@@ -29,19 +29,50 @@ def getmode():
 def modechange():
     print (request.method, request.form.get('mode'))
     if 0 < int(request.form.get('mode')) < 5:
-        fp = open("../mode/ui.mode", "w")
-        fp.write(request.form.get('mode'))
-        fp.close()
-
-        response = {
-            "status": "success"
-        }
+        try:
+            fp = open("../mode/ui.mode", "w")
+            fp.write(request.form.get('mode'))
+            fp.close()
+            response = {
+                "status": "success"
+            }
+        except:
+            response = {
+                "status": "failure"
+            }
     else:
         response = {
             "status": "failure"
         }
 
     return json.dumps(response)
+
+@app.route("/reset", methods=['GET'])
+def reset():
+    try:
+        fp = open("../mode/real.mode", "w")
+        fp.write("0")
+        fp.close()
+
+        response = {
+            "status": "success"
+        }
+    except:
+        response = {
+            "status": "failure"
+        }
+
+    return json.dumps(response)
+
+@app.route("/reboot", methods=['GET'])
+def reboot():
+    import os
+    os.system('reboot')
+
+@app.route("/halt", methods=['GET'])
+def reboot():
+    import os
+    os.system('poweroff')
 
 @app.route("/setalert", methods=['POST'])
 def setalert():

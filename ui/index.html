@@ -138,8 +138,34 @@
     <p>시뮬레이터를 제어합니다. </p>
     <fieldset>
 		<legend>제어</legend>
-    <button class="simbtn" name="reset">리셋(SW재시작)</button>
-    <button class="simbtn" name="reboot">리부팅</button>
+    <button class="simbtn" name="reset">프로그램 재시작</button>
+    <button class="simbtn" name="reboot">장비 재시작</button>
+    <button class="simbtn" name="halt">전원끄기</button>
+	  </fieldset>
+    <fieldset>
+		<legend>경보</legend>
+		<label for="sim">경보없음</label>
+		<input type="radio" name="alert" id="normal" value="0" checked>
+		<label for="sim">고농도EC</label>
+    <input type="radio" name="alert" id="high-ec" value="1">
+		<label for="sim">저농도EC</label>
+    <input type="radio" name="alert" id="low-ec" value="2">
+		<label for="sim">고농도pH</label>
+    <input type="radio" name="alert" id="high-ph" value="3">
+		<label for="sim">저농도pH</label>
+    <input type="radio" name="alert" id="low-ph" value="4">
+		<label for="sim">저농도유량</label>
+    <input type="radio" name="alert" id="low-flow" value="5">
+		<label for="sim">고온</label>
+    <input type="radio" name="alert" id="high-temp" value="6">
+		<label for="sim">저온</label>
+    <input type="radio" name="alert" id="low-temp" value="7">
+		<label for="sim">기타 비정상</label>
+    <input type="radio" name="alert" id="abnormal" value="8">
+		<label for="sim">저수위</label>
+    <input type="radio" name="alert" id="low-level" value="9">
+		<label for="sim">과부하</label>
+    <input type="radio" name="alert" id="overload" value="10">
 	  </fieldset>
   </div>
 </div>

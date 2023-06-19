@@ -167,6 +167,38 @@ var SimXComm = function (host, ui) {
       .always(function(param) { ; });
   }
 
+  var reset = function () {
+    console.log("reset")
+    $.get("/reset", function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /*console.log ("reset. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to reset")*/; })
+      .always(function(param) { ; });
+  }
+
+  var reboot = function () {
+    console.log("reboot")
+    $.get("/reboot", function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /*console.log ("reset. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to reset")*/; })
+      .always(function(param) { ; });
+  }
+
+  var halt = function () {
+    console.log("halt")
+    $.get("/halt", function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /*console.log ("reset. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to reset")*/; })
+      .always(function(param) { ; });
+  }
+
+  var setalert= function (alt) {
+    console.log("setalert")
+    $.get("/setalert", {"alert":alt}, function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /*console.log ("reset. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to reset")*/; })
+      .always(function(param) { ; });
+  }
+
   return {
     initialize: initialize,
     setmode: setmode,
