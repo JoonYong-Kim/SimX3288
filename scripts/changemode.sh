@@ -12,12 +12,14 @@ stopall () {
   #service ksmaster stop
   pkill -ef -9 ns2023
   pkill -ef -9 ksmaster
+  sleep 1
 }
 
 # mode 1
 startsim () {
   echo "start simulator"
   service ns2023 start
+  sleep 1
   service ksmaster start
   #cd $SIMX/svr; python3 ksmaster.py start 1
   #cd $NUT/test; python3 ns2023.py start sim
@@ -36,6 +38,7 @@ startctrl () {
 startsimnctrl() {
   echo "start simulator & controller"
   service ns2023 start
+  sleep 1
   service ksmaster start
   #cd $SIMX/svr; python3 ksmaster.py start 3
   #cd $NUT/test; python3 ns2023.py start sim
