@@ -6,37 +6,45 @@ NUT=$SIMX/nutrient_supply_controller
 
 stopall () {
   echo "stop all"
-  kill -9 $(head -n 1 /var/run/ns2023.pid)
-  kill -9 $(head -n 1 /var/run/ksmaster.pid)
+  #kill -9 $(head -n 1 /var/run/ns2023.pid)
+  #kill -9 $(head -n 1 /var/run/ksmaster.pid)
+  service ns2023 stop
+  service ksmaster stop
 }
 
 # mode 1
 startsim () {
   echo "start simulator"
-  cd $SIMX/svr; python3 ksmaster.py start 1
-  cd $NUT/test; python3 ns2023.py start sim
+  service ns2023 start
+  service ksmaster start
+  #cd $SIMX/svr; python3 ksmaster.py start 1
+  #cd $NUT/test; python3 ns2023.py start sim
   echo "1" > $SIMX/mode/real.mode
 }
 
 # mode 2
 startctrl () {
   echo "start controller"
-  cd $SIMX/svr; python3 ksmaster.py start 2
+  service ksmaster start
+  #cd $SIMX/svr; python3 ksmaster.py start 2
   echo "2" > $SIMX/mode/real.mode
 }
 
 # mode 3
 startsimnctrl() {
   echo "start simulator & controller"
-  cd $SIMX/svr; python3 ksmaster.py start 3
-  cd $NUT/test; python3 ns2023.py start sim
+  service ns2023 start
+  service ksmaster start
+  #cd $SIMX/svr; python3 ksmaster.py start 3
+  #cd $NUT/test; python3 ns2023.py start sim
   echo "3" > $SIMX/mode/real.mode
 }
 
 # mode 4
 startnut () {
   echo "start nutrient-supplier"
-  cd $NUT/test; python3 ns2023.py start real
+  #cd $NUT/test; python3 ns2023.py start real
+  service ns2023 start
   echo "4" > $SIMX/mode/real.mode
 }
 
