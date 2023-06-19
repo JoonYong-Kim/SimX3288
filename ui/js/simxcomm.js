@@ -209,7 +209,11 @@ var SimXComm = function (host, ui) {
     stop: stop,
     once: once,
     irrigate: irrigate,
-    fertigate: fertigate
+    fertigate: fertigate,
+    reset: reset,
+    reboot: reboot,
+    halt: halt,
+    setalert: setalert
   };
 }
 
