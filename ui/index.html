@@ -19,6 +19,7 @@
     $(".cmdbtn").button();
     $(".simbtn").button();
     ui = SimXUI();
+    ui.setVersion();
 
     comm = SimXComm(window.location.hostname, ui);
     comm.initialize();
