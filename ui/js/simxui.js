@@ -225,7 +225,7 @@ var SimXUI = function () {
   var genNSSS = function (list) {
     if (list == null)
       return "";
-     return "(" + getfloat(list[0], list[1]) + "," + getfloat(list[9], list[10]) + ")";
+    return "(" + getfloat(list[0], list[1]) + "," + getfloat(list[9], list[10]) + ")";
   }
 
   var genNSS = function (id, list, comp) {
