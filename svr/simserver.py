@@ -66,12 +66,10 @@ def reset():
 
 @app.route("/reboot", methods=['GET'])
 def reboot():
-    import os
     os.system('reboot')
 
 @app.route("/halt", methods=['GET'])
 def reboot():
-    import os
     os.system('poweroff')
 
 @app.route("/setalert", methods=['POST'])
