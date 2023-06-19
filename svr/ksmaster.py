@@ -246,7 +246,7 @@ if __name__ == "__main__":
         }
     }
 
-    fp = open("../../mode/ui.mode", "r")
+    fp = open("../mode/ui.mode", "r")
     mode = int(fp.readline())
     fp.close()
     if mode == 4:
