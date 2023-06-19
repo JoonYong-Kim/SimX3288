@@ -93,7 +93,7 @@ var SimXAct = function (ui, comm) {
     $(".simbtn[name='upgrade']").click (function() {
       console.log("upgrade");
       _ui.confirmdlg("업그레이드", "프로그램을 업그레이드 하시겠습니까?", null, function() {
-        _comm.halt();
+        _comm.upgrade();
       }, function () {
         // 선택 원래대로.
       });
