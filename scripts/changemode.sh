@@ -8,8 +8,10 @@ stopall () {
   echo "stop all"
   #kill -9 $(head -n 1 /var/run/ns2023.pid)
   #kill -9 $(head -n 1 /var/run/ksmaster.pid)
-  service ns2023 stop
-  service ksmaster stop
+  #service ns2023 stop
+  #service ksmaster stop
+  pkill -ef -9 ns2023
+  pkill -ef -9 ksmaster
 }
 
 # mode 1
