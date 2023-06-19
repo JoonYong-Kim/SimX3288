@@ -192,7 +192,7 @@ var SimXComm = function (host, ui) {
   }
 
   var setalert= function (alt) {
-    console.log("setalert")
+    console.log("setalert : " + alt)
     $.post("/setalert", {"alert":alt}, function(param) { /* console.log ("sent")*/; }, 'json')
       .done(function(param) { /*console.log ("reset. wait for a while")*/; })
       .fail(function(param) { /*console.log ("fail to reset")*/; })

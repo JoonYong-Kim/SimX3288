@@ -182,6 +182,8 @@ class NutSim:
     def updatenut(self, gap, nsec):
         smargin = 0.1
 
+        self.loadalert()
+
         if self._nut["alert"] != 0:
             self._nut["status"] = 1
             return
