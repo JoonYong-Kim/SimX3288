@@ -212,6 +212,7 @@ class NutSim:
         nsec = self.getnsec()
         gap = nsec - self._nsec
         if gap < 0: # reset - 1 day passed
+            self._mqlog.info ("One day passed.")
             self._flow = [0] * (self._maxarea + 1)
 
         if gap < 1: #skip
@@ -256,7 +257,7 @@ class NS2023(Runner):
         self._mode = mode
         self._mqlog = MQTTLogger()
         self._sim = NutSim(self._mqlog)
-        self._comm = nss.start_ns_communicator(self._option[mode], self._sim.getregmap(), False)
+        self._comm = nss.start_ns_communicator(self._option[mode], self._sim.getregmap(), True)
         self._isrunning = False
 
     def getdname(self):
