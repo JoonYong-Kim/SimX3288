@@ -191,6 +191,14 @@ var SimXComm = function (host, ui) {
       .always(function(param) { ; });
   }
 
+  var upgrade = function () {
+    console.log("upgrade")
+    $.get("/upgrade", function(param) { /* console.log ("sent")*/; })
+      .done(function(param) { /*console.log ("reset. wait for a while")*/; })
+      .fail(function(param) { /*console.log ("fail to reset")*/; })
+      .always(function(param) { ; });
+  }
+
   var setalert= function (alt) {
     console.log("setalert : " + alt)
     $.post("/setalert", {"alert":alt}, function(param) { /* console.log ("sent")*/; }, 'json')
@@ -213,6 +221,7 @@ var SimXComm = function (host, ui) {
     reset: reset,
     reboot: reboot,
     halt: halt,
+    upgrade: upgrade,
     setalert: setalert
   };
 }

@@ -90,6 +90,15 @@ var SimXAct = function (ui, comm) {
       });
     });
 
+    $(".simbtn[name='upgrade']").click (function() {
+      console.log("upgrade");
+      _ui.confirmdlg("업그레이드", "프로그램을 업그레이드 하시겠습니까?", null, function() {
+        _comm.halt();
+      }, function () {
+        // 선택 원래대로.
+      });
+    });
+
     $("input[name='alert']:radio").change (function () {
       console.log("alert change : " + this.value);
       _ui.confirmdlg("경보 변경", "경보를 강제로 설정하시겠습니까?", this.value, function(alt) {

@@ -349,11 +349,8 @@ var SimXUI = function () {
   }
 
   var updatemodedesc = function (mode) {
-    //uimode = $("input[name='mode']:checked").val();
-    //console.log("setmode : " + mode["real"] + " " + mode["ui"]);
     var fil = '[value='+mode["ui"]+']';
     $("input[name='mode']").filter('[value="'+mode["ui"]+'"]').prop('checked', true);
-    //console.log("ui mode desc: " + fil);
 
     if (mode["ui"] == mode["real"]) {
       $(".modedesc").text("작동모드가 정상적으로 작동합니다.");
@@ -366,6 +363,10 @@ var SimXUI = function () {
       $(".ctrlbtn").prop('disabled', true);
       $(".cmdbtn").prop('disabled', true);
     }
+  }
+
+  var setVersion = function() {
+      $("#ver").text("시뮬레이터 버전은 1.0.1 입니다.");
   }
 
   var confirmdlg = function(title, message, param, yesfunc, nofunc) {
@@ -403,6 +404,7 @@ var SimXUI = function () {
     setNSS: setNSS,
     setSS: setSS,
     confirmdlg: confirmdlg,
+    setVersion: setVersion,
     updatemodedesc: updatemodedesc
   }
 }

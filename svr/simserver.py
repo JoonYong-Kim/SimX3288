@@ -74,6 +74,11 @@ def halt():
     os.system('poweroff')
     return json.dumps({"status": "success"})
 
+@app.route("/upgrade", methods=['GET'])
+def upgrade():
+    os.system('git pull')
+    return json.dumps({"status": "success"})
+
 @app.route("/setalert", methods=['POST'])
 def setalert():
     if 0 <= int(request.form.get('alert')) < 11:
