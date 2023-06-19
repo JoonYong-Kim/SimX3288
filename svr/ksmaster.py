@@ -246,6 +246,7 @@ if __name__ == "__main__":
         }
     }
 
+    runtype = sys.argv[1]
     fp = open("../mode/ui.mode", "r")
     mode = int(fp.readline())
     fp.close()

@@ -323,17 +323,18 @@ if __name__ == '__main__':
         print("Usage : python ns2023.py [start|stop|run|debug]")
         sys.exit(2)
 
+    runtype = sys.argv[1]
     fp = open("../../mode/ui.mode", "r")
-    mode = int(fp.readline())
+    tmp = int(fp.readline())
     fp.close()
-    if mode in (1, 3):
-        runtype = "sim"
-    elif mode == 2:
+    if tmp in (1, 3):
+        mode = "sim"
+    elif tmp == 2:
         sys.exit(0)
     else:
-        runtype = "real"
+        mode = "real"
 
-    runner = NS2023('conf/ns2023.json', runtype)
+    runner = NS2023('conf/ns2023.json', mode)
     adaemon = Daemon(runner.getdname(), runner)
     if 'start' == runtype:
         adaemon.start()
