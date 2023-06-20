@@ -54,9 +54,15 @@ var SimXComm = function (host, ui) {
         } else if (message["addr"] == 401) {
           _ui.setNSS(message["ret"][0], message["ret"][1], _mode);
         } else if (message["addr"] == 501) {
-          _ui.setNDC(message["ret"][0], message["ret"][1], _mode);
+          if (message["ret"][0] == null)
+            _ui.setNDC(message["ret"][1], _mode);
+          else
+            _ui.setNDC(message["ret"][0], _mode);
         } else if (message["addr"] == 504) {
-          _ui.setNSC(message["ret"][0], message["ret"][1], _mode);
+          if (message["ret"][0] == null)
+            _ui.setNSC(message["ret"][1], _mode);
+          else
+            _ui.setNSC(message["ret"][0], _mode);
         } else {
           console.log("unknown info" + payload.toString());
         }
