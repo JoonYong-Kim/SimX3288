@@ -98,12 +98,12 @@ var SimXComm = function (host, ui) {
   }
 
   var read = function(addr, count, unit) {
-    msg = {"addr":addr, "count":count, "unit":unit};
+    msg = {"addr":addr, "count":count, "unit":parseInt(unit)};
     _client.publish('simx/read', JSON.stringify(msg));
   }
 
   var write = function(addr, content, unit) {
-    msg = {"addr":addr, "content":content, "unit":unit};
+    msg = {"addr":addr, "content":content, "unit":parseInt(unit)};
     _client.publish('simx/write', JSON.stringify(msg));
   }
 
