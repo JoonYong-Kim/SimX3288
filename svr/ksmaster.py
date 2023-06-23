@@ -241,8 +241,8 @@ if __name__ == "__main__":
     option = {
         "mqtt" : {"host": "127.0.0.1", "port": 1883, "keepalive": 60},
         "modbus": {
-            "sim" : {"method": "rtu", "port": "/dev/ttySim1", "baudrate": 9600, "timeout":5},
-            "real" : {"method": "rtu", "port": "/dev/ttyUSB0", "baudrate": 9600, "timeout":30}
+            "sim" : {"method": "rtu", "port": "/dev/ttySim1", "baudrate": 9600, "timeout":3},
+            "real" : {"method": "rtu", "port": "/dev/ttyUSB0", "baudrate": 9600, "timeout":3}
         }
     }
 
