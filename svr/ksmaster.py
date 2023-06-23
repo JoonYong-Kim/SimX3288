@@ -250,6 +250,7 @@ if __name__ == "__main__":
     fp = open("../mode/ui.mode", "r")
     mode = int(fp.readline())
     fp.close()
+    print ("mode:", mode)
     if mode == 4:
         sys.exit(0)
 
