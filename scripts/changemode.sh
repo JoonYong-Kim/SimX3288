@@ -12,14 +12,16 @@ stopall () {
 }
 
 checkns2023 () {
-  service ns2023 status
+  #service ns2023 status
+  ps aux | grep ns2023 | grep -v grep
   if [ $? != "0" ]; then
     service ns2023 start
   fi
 }
 
 checkksmaster () {
-  service ksmaster status
+  #service ksmaster status
+  ps aux | grep ksmaster | grep -v grep
   if [ $? != "0" ]; then
     service ksmaster start
   fi
