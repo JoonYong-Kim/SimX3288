@@ -140,13 +140,16 @@ class KSMaster(Runner):
                 self._option["modbus"] = json.loads(msg)
                 self._modbus = self.connectmodbus()
             elif topic == 'simx/write':
+                self._logger.info("write " + str(msg) + "' on topic '" + topic)
                 self.write(json.loads(msg))
             elif topic == 'simx/read':
+                self._logger.info("read " + str(msg) + "' on topic '" + topic)
                 self.read(json.loads(msg))
+            else:
+                self._logger.info(str(msg) + "' on topic '" + topic)
 
     def onmsg(self, client, obj, blk):
-        self._logger.info("Received '" + str(blk.payload) + "' on topic '"
-              + blk.topic + "' with QoS " + str(blk.qos))
+        #self._logger.info("Received '" + str(blk.payload) + "' on topic '" + blk.topic + "' with QoS " + str(blk.qos))
         try:
             self._msgq.append((blk.topic, blk.payload))
 
