@@ -6,13 +6,23 @@ NUT=$SIMX/nutrient_supply_controller
 
 stopall () {
   echo "stop all"
-  #kill -9 $(head -n 1 /var/run/ns2023.pid)
-  #kill -9 $(head -n 1 /var/run/ksmaster.pid)
-  #service ns2023 stop
-  #service ksmaster stop
   pkill -ef -9 ns2023
   pkill -ef -9 ksmaster
   sleep 1
+}
+
+checkns2023 () {
+  service ns2023 status
+  if [ $? != "0" ]; then
+    service ns2023 start
+  fi
+}
+
+checkksmaster () {
+  service ksmaster status
+  if [ $? != "0" ]; then
+    service ksmaster start
+  fi
 }
 
 # mode 1
@@ -21,8 +31,6 @@ startsim () {
   service ns2023 start
   sleep 1
   service ksmaster start
-  #cd $SIMX/svr; python3 ksmaster.py start 1
-  #cd $NUT/test; python3 ns2023.py start sim
   echo "1" > $SIMX/mode/real.mode
 }
 
@@ -30,7 +38,6 @@ startsim () {
 startctrl () {
   echo "start controller"
   service ksmaster start
-  #cd $SIMX/svr; python3 ksmaster.py start 2
   echo "2" > $SIMX/mode/real.mode
 }
 
@@ -40,15 +47,12 @@ startsimnctrl() {
   service ns2023 start
   sleep 1
   service ksmaster start
-  #cd $SIMX/svr; python3 ksmaster.py start 3
-  #cd $NUT/test; python3 ns2023.py start sim
   echo "3" > $SIMX/mode/real.mode
 }
 
 # mode 4
 startnut () {
   echo "start nutrient-supplier"
-  #cd $NUT/test; python3 ns2023.py start real
   service ns2023 start
   echo "4" > $SIMX/mode/real.mode
 }
@@ -78,4 +82,20 @@ if [ "$uimode" != "$realmode" ]; then
   esac
 else
   echo "no need to change"
+  case $realmode in
+    "1")
+      checkns2023
+      checkksmaster
+      ;;
+    "2")
+      checkksmaster
+      ;;
+    "3")
+      checkns2023
+      checkksmaster
+      ;;
+    "4")
+      checkns2023
+      ;;
+  esac
 fi
