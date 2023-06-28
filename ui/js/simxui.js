@@ -351,14 +351,16 @@ var SimXUI = function () {
   var updatemodedesc = function (mode) {
     var fil = '[value='+mode["ui"]+']';
     $("input[name='mode']").filter('[value="'+mode["ui"]+'"]').prop('checked', true);
+    var mtext = ['준비중모드', '시뮬레이션 모드', '통합제어기 모드', '시뮬레이션&통합제어기 모드', '양액기 모드'];
 
     if (mode["ui"] == mode["real"]) {
-      $(".modedesc").text("작동모드가 정상적으로 작동합니다.");
+       
+      $(".modedesc").text(mtext[parseInt(mode["real"])] + "가 정상적으로 작동합니다.");
       // enable all input
       $(".ctrlbtn").prop('disabled', false);
       $(".cmdbtn").prop('disabled', false);
     } else {
-      $(".modedesc").text("작동모드를 변환중에 있습니다. 기다려 주세요.");
+      $(".modedesc").text(mtext[parseInt(mode["ui"])] + "로 변환중에 있습니다. 기다려 주세요.");
       // disable all input
       $(".ctrlbtn").prop('disabled', true);
       $(".cmdbtn").prop('disabled', true);
