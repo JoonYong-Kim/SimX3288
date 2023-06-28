@@ -97,7 +97,7 @@ class KSMaster(Runner):
         self._client = None
         self._connected = False
         self._modbus = [None, None]
-        self._msgq = deque(maxlen=3)
+        self._msgq = deque(maxlen=7)
         self._isrunning = False
         self._keywords = ["sim", "real"]
 
