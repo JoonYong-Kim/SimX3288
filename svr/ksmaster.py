@@ -126,6 +126,11 @@ class KSMaster(Runner):
     def close(self):
         self._client.loop_stop()
         self._connected = False
+        if self._modbus[0]:
+            self._modbus[0].close()
+        if self._modbus[1]:
+            self._modbus[1].close()
+        self._modbus = [None, None]
 
     def onclose(self, client, udata, sock):
         self._logger.warning("close mqtt connection.")
