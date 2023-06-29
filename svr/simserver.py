@@ -77,6 +77,10 @@ def halt():
 @app.route("/upgrade", methods=['GET'])
 def upgrade():
     os.system('su -c "git pull" debian')
+    os.system('pkill -ef -9 ksmaster')
+    os.system('service ksmaster start')
+    os.system('pkill -ef -9 ns2023')
+    os.system('service ns2023 start')
     return json.dumps({"status": "success"})
 
 @app.route("/setalert", methods=['POST'])
