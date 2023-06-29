@@ -227,12 +227,33 @@ class KSMaster(Runner):
     def run(self, debug=False):
         self._isrunning = not debug 
 
+        n = 0
         while self._isrunning:
+            if n % 50:
+                if self.checkmode() is True:
+                    self.finalize()
+                    self.initialize()
+                n = 0
+
             self.process()
             time.sleep(0.1)
+            n = n + 1
 
     def finalize(self):
         self.close()
+
+    def checkmode(self):
+        try:
+            fp = open("../mode/ui.mode", "r")
+            mode = int(fp.readline())
+            fp.close()
+            if mode != self._mode:
+                self._logger.info("Running mode was changed : " + str(mode))
+                self._mode = mode
+                return True
+        except Exception as ex:
+            self._logger.warning("check mode exception : " + str(ex))
+        return False
 
 if __name__ == "__main__":
     import sys
@@ -250,14 +271,7 @@ if __name__ == "__main__":
     }
 
     runtype = sys.argv[1]
-    fp = open("../mode/ui.mode", "r")
-    mode = int(fp.readline())
-    fp.close()
-    print ("mode:", mode)
-    if mode == 4:
-        sys.exit(0)
-
-    master = KSMaster(option, mode)
+    master = KSMaster(option, 1)
     daemon = Daemon("ksmaster", master, runtype)
 
     if 'start' == runtype:

@@ -6,56 +6,40 @@ NUT=$SIMX/nutrient_supply_controller
 
 stopall () {
   echo "stop all"
-  pkill -ef -9 ns2023
-  pkill -ef -9 ksmaster
+  #pkill -ef -9 ns2023
+  #pkill -ef -9 ksmaster
   sleep 1
-}
-
-checkns2023 () {
-  #service ns2023 status
-  ps aux | grep ns2023 | grep -v grep
-  if [ $? != "0" ]; then
-    service ns2023 start
-  fi
-}
-
-checkksmaster () {
-  #service ksmaster status
-  ps aux | grep ksmaster | grep -v grep
-  if [ $? != "0" ]; then
-    service ksmaster start
-  fi
 }
 
 # mode 1
 startsim () {
   echo "start simulator"
-  service ns2023 start
-  sleep 1
-  service ksmaster start
+  #service ns2023 start
+  #sleep 1
+  #service ksmaster start
   echo "1" > $SIMX/mode/real.mode
 }
 
 # mode 2
 startctrl () {
   echo "start controller"
-  service ksmaster start
+  #service ksmaster start
   echo "2" > $SIMX/mode/real.mode
 }
 
 # mode 3
 startsimnctrl() {
   echo "start simulator & controller"
-  service ns2023 start
-  sleep 1
-  service ksmaster start
+  #service ns2023 start
+  #sleep 1
+  #service ksmaster start
   echo "3" > $SIMX/mode/real.mode
 }
 
 # mode 4
 startnut () {
   echo "start nutrient-supplier"
-  service ns2023 start
+  #service ns2023 start
   echo "4" > $SIMX/mode/real.mode
 }
 
@@ -84,20 +68,4 @@ if [ "$uimode" != "$realmode" ]; then
   esac
 else
   echo "no need to change"
-  case $realmode in
-    "1")
-      checkns2023
-      checkksmaster
-      ;;
-    "2")
-      checkksmaster
-      ;;
-    "3")
-      checkns2023
-      checkksmaster
-      ;;
-    "4")
-      checkns2023
-      ;;
-  esac
 fi

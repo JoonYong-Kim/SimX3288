@@ -283,8 +283,13 @@ class NS2023(Runner):
         self._mode = mode
         self._mqlog = MQTTLogger()
         self._sim = NutSim(self._mqlog)
-        self._comm = nss.start_ns_communicator(self._option[mode], self._sim.getregmap(), True)
         self._isrunning = False
+
+    def initialize(self):
+        if self._mode != "wait":
+            self._comm = nss.start_ns_communicator(self._option[self._mode], self._sim.getregmap(), True)
+        else:
+            self._comm = None
 
     def getdname(self):
         return "ns2023-" + self._mode
@@ -294,7 +299,8 @@ class NS2023(Runner):
         self._isrunning = False
 
     def finalize(self):
-        nss.stop_ns_communicator(self._comm)
+        if self._comm:
+            nss.stop_ns_communicator(self._comm)
 
     def update(self):
         for idx, obs in enumerate(self._sim.getobservations()):
@@ -308,23 +314,52 @@ class NS2023(Runner):
         self._isrunning = True
 
         while self._isrunning:
-            ndcmd = nss.get_node_control_info(self._comm)
-            if ndcmd:
-                self._logger.info("Get Node Command : " + str(ndcmd))
-                self._sim.setcontrol(ndcmd)
+            if n % 50 == 0:
+                if self.checkmode() is True:
+                    self.finalize()
+                    self.initialize()
 
-            nutcmd = nss.get_nutrient_control_info(self._comm)
-            if nutcmd:
-                self._logger.info("Get NS Command : " + str(nutcmd))
-                self._sim.setcommand(nutcmd)
+            if self._mode != "wait":
+                ndcmd = nss.get_node_control_info(self._comm)
+                if ndcmd:
+                    self._logger.info("Get Node Command : " + str(ndcmd))
+                    self._sim.setcontrol(ndcmd)
 
-            if self._sim.execute():
-                n = n + 1
-                if n % 10 == 0:
-                    self._logger.info("Update register~" + str(self._sim.getstatus()))
-                self.update()
+                nutcmd = nss.get_nutrient_control_info(self._comm)
+                if nutcmd:
+                    self._logger.info("Get NS Command : " + str(nutcmd))
+                    self._sim.setcommand(nutcmd)
 
+                if self._sim.execute():
+                    self.update()
+                    if n % 10 == 0:
+                        self._logger.info("Update register~" + str(self._sim.getstatus()))
+
+            n = n + 1
             time.sleep(0.1)
+
+    def checkmode(self):
+        try:
+            fp = open("../../mode/ui.mode", "r")
+            tmp = int(fp.readline())
+            fp.close()
+            if tmp in (1, 3):
+                mode = "sim"
+            elif tmp == 2:
+                mode = "wait"
+            else:
+                mode = "real"
+
+            if mode != self._mode:
+                self._logger.info("Running Mode was changed : " + mode)
+                self._mode = mode
+                return True
+
+        except Exception as ex:
+            self._logger.warn("Fail to check mode  : " + str(ex))
+
+        return False
+
 
 if __name__ == '__main__':
     import sys
@@ -334,17 +369,7 @@ if __name__ == '__main__':
         sys.exit(2)
 
     runtype = sys.argv[1]
-    fp = open("../../mode/ui.mode", "r")
-    tmp = int(fp.readline())
-    fp.close()
-    if tmp in (1, 3):
-        mode = "sim"
-    elif tmp == 2:
-        sys.exit(0)
-    else:
-        mode = "real"
-
-    runner = NS2023('conf/ns2023.json', mode)
+    runner = NS2023('conf/ns2023.json', "wait")
     adaemon = Daemon(runner.getdname(), runner)
     if 'start' == runtype:
         adaemon.start()
