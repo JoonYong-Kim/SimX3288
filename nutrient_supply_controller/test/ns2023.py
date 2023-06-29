@@ -310,14 +310,15 @@ class NS2023(Runner):
         nss.update_nutrient_status(self._comm, self._sim.getnut())
 
     def run(self, debug = False):
-        n = 0
         self._isrunning = True
+        cur = time.time()
 
         while self._isrunning:
-            if n % 50 == 0:
+            if time.time() - cur > 5:
                 if self.checkmode() is True:
                     self.finalize()
                     self.initialize()
+                cur = time.time()
 
             if self._mode != "wait":
                 ndcmd = nss.get_node_control_info(self._comm)
@@ -332,10 +333,9 @@ class NS2023(Runner):
 
                 if self._sim.execute():
                     self.update()
-                    if n % 10 == 0:
+                    if int(cur) % 10 == 0:
                         self._logger.info("Update register~" + str(self._sim.getstatus()))
 
-            n = n + 1
             time.sleep(0.1)
 
     def checkmode(self):
