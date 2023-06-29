@@ -48,6 +48,7 @@ realmode=$(head -n 1 ../mode/real.mode)
 
 if [ "$uimode" != "$realmode" ]; then
   stopall
+  sleep 5
   case $uimode in
     "1")
       echo "change mode to 1" $uimode
