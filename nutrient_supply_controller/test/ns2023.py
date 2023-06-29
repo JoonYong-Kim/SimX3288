@@ -300,7 +300,9 @@ class NS2023(Runner):
 
     def finalize(self):
         if self._comm:
+            self._logger.info("Stopping communicator.")
             nss.stop_ns_communicator(self._comm)
+            self._comm = None
 
     def update(self):
         for idx, obs in enumerate(self._sim.getobservations()):
