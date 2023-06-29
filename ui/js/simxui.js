@@ -368,7 +368,7 @@ var SimXUI = function () {
   }
 
   var setVersion = function() {
-      $("#ver").text("시뮬레이터 버전은 1.0.4 입니다.");
+      $("#ver").text("시뮬레이터 버전은 1.0.5 입니다.");
   }
 
   var confirmdlg = function(title, message, param, yesfunc, nofunc) {
