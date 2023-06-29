@@ -70,8 +70,7 @@ class Connection:
         try:
             res = self._conn.write_registers(addr, content, unit=unit)
             if res.isError():
-                self._logger.warning("Fail to write register." + str(unit) + ","
-                        + str(addr) + ":" + str(res))
+                self._logger.warning("Fail to write register." + str(unit) + "," + str(addr) + ":" + str(res))
                 return False
             else:
                 return True
@@ -120,6 +119,9 @@ class KSMaster(Runner):
             self._logger.warning("fail to connect mqttserver : " + str(ex))
             self._connected = False
         return self._connected
+
+    def resetmsgq(self):
+        self._msgq = deque(maxlen=7)
 
     def close(self):
         self._client.loop_stop()
@@ -181,13 +183,15 @@ class KSMaster(Runner):
         if self._modbus[0]: 
             # 시뮬레이터의 unit 은 항상 1
             ret[0] = self._modbus[0].writeregister(msg["addr"], msg["content"], 1)
-            if ret[0] is None:
+            if ret[0] is False:
                 self._modbus[0].check()
+                self.resetmsgq()
 
         if self._modbus[1]: 
             ret[1] = self._modbus[1].writeregister(msg["addr"], msg["content"], msg["unit"])
-            if ret[1] is None:
+            if ret[1] is False:
                 self._modbus[1].check()
+                self.resetmsgq()
 
         msg["ret"] = ret
         self.publish("simx/res", msg)
@@ -200,11 +204,13 @@ class KSMaster(Runner):
             ret[0] = self._modbus[0].readregister(msg["addr"], msg["count"], 1)
             if ret[0] is None:
                 self._modbus[0].check()
+                self.resetmsgq()
 
         if self._modbus[1]: 
             ret[1] = self._modbus[1].readregister(msg["addr"], msg["count"], msg["unit"])
             if ret[1] is None:
                 self._modbus[1].check()
+                self.resetmsgq()
 
         msg["ret"] = ret
         self.publish("simx/reg", msg)
