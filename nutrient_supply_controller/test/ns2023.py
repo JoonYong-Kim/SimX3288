@@ -350,6 +350,7 @@ class NS2023(Runner):
             else:
                 mode = "real"
 
+            self._logger.info("check mode : " + mode + " "  + self._mode)
             if mode != self._mode:
                 self._logger.info("Running Mode was changed : " + mode)
                 self._mode = mode
