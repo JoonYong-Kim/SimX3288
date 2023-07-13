@@ -240,6 +240,7 @@ class NutSim:
         if gap < 0: # reset - 1 day passed
             self._mqlog.info ("One day passed.")
             self._flow = [0] * (self._maxarea + 1)
+            self._nsec = nsec
 
         if gap < 1: #skip
             return False
