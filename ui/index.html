@@ -13,8 +13,13 @@
   <script src="js/simxact.js"></script>
   <script>
   $( function() {
-    $( "#tabs" ).tabs();
-    $( "input[type='radio']" ).checkboxradio({icon:false});
+    $("#tabs").tabs();
+    $("#scenarios").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix");
+    $("#scenarios li").removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+    $("#sce-1-sub").accordion({
+      heightStyle: "content"
+    });
+    $("input[type='radio']" ).checkboxradio({icon:false});
     $(".ctrlbtn").button();
     $(".cmdbtn").button();
     $(".simbtn").button();
@@ -53,7 +58,8 @@
     <li><a href="#tabs-4">양액기제어권</a></li>
     <li><a href="#tabs-5">양액기제어</a></li>
     <li><a href="#tabs-6">센서정보</a></li>
-    <li><a href="#tabs-7">시뮬레이터제어</a></li>
+    <li><a href="#tabs-7">표준적합성시험</a></li>
+    <li><a href="#tabs-8">시뮬레이터제어</a></li>
   </ul>
   <div id="tabs-1">
     <h2>기본설정</h2>
@@ -67,10 +73,14 @@
 		<input type="radio" name="mode" id="simnctrl" value="3">
 		<label for="nut">양액기 작동 모드</label>
 		<input type="radio" name="mode" id="nut" value="4">
-
+		<label for="ctrltest">통합제어기 시험 모드</label>
+		<input type="radio" name="mode" id="ctrltest" value="5">
+		<label for="nuttest">양액기 시험 모드</label>
+		<input type="radio" name="mode" id="nuttest" value="6">
     <p>
 		<label for="unit">슬레이브 아이디</label>
     <input type="number" name="unit" id="unit" value=1>
+
 	  </fieldset>
     <p class="modedesc"></p>
   </div>
@@ -136,6 +146,47 @@
   </div>
  
   <div id="tabs-7">
+    <h2>표준적합성 시험</h2>
+    <p>표준적합성 시험을 진행합니다. 작동모드를 시험모드로 선택하셔야 합니다. </p>
+    <div id="scenarios">
+    <ul>
+      <li><a href="#sce-1">연결시험</a></li>
+      <li><a href="#sce-2">제어권변경시험</a></li>
+      <li><a href="#sce-3">어쩌고 시험</a></li>
+    </ul>
+    <div id="sce-1">
+      <h2>Content heading 1</h2>
+      <div id="sce-1-sub">
+      <h3>Section 1</h3>
+      <div>
+        <p>abc</p>
+      </div>
+      <h3>Section 2</h3>
+      <div>
+        <p>section 2</p>
+      </div>
+      <h3>Section 3</h3>
+      <div>
+        <p>section 3</p>
+        <ul>
+          <li>List item one</li>
+          <li>List item two</li>
+          <li>List item three</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+    <div id="sce-2">
+      <h2>Content heading 2</h2>
+      <p></p>
+    </div>
+    <div id="sce-3">
+      <h2>Content heading 3</h2>
+      <p></p>
+    </div>
+  </div>
+  </div>
+  <div id="tabs-8">
     <h2>시뮬레이터 제어</h2>
     <p>시뮬레이터를 제어합니다. </p>
     <div id="ver"></div>
@@ -172,6 +223,9 @@
     <input type="radio" name="alert" id="overload" value="10">
 	  </fieldset>
   </div>
+</div>
+<div id="logs">
+    <textarea name="comlog" id="comlog"></textarea>
 </div>
  
 </body>
