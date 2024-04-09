@@ -102,7 +102,11 @@ class KSMaster(Runner):
 
     def connect(self):
         try:
-            self._client = mqtt.Client()
+            try:
+                self._client = mqtt.Client()
+            except:
+                self._client = mqtt.Client(mqtt.CallbackAIPVersion.VERSION1)
+
             self._client.loop(.1)
 
             self._client.on_message = self.onmsg
