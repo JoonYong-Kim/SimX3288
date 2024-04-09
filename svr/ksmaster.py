@@ -105,7 +105,7 @@ class KSMaster(Runner):
             try:
                 self._client = mqtt.Client()
             except:
-                self._client = mqtt.Client(mqtt.CallbackAIPVersion.VERSION1)
+                self._client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
 
             self._client.loop(.1)
 
